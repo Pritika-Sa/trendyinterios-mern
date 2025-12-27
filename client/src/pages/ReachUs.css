@@ -1,0 +1,305 @@
+/* ===== PREMIUM REACH US PAGE ===== */
+
+.reach-us-page {
+  font-family: 'Inter', sans-serif;
+  background: #fdfdfd;
+}
+
+/* 1. HERO SECTION */
+.reach-hero {
+  position: relative;
+  height: 400px;
+  background-image: url('https://images.unsplash.com/photo-1497366811353-6870744d04b2?q=80&w=2069&auto=format&fit=crop');
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.hero-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, rgba(20, 30, 48, 0.9), rgba(36, 59, 85, 0.8));
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+  color: #fff;
+  opacity: 0;
+  animation: fadeDown 0.8s ease-out forwards;
+}
+
+.hero-content h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: 3.5rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  margin-bottom: 15px;
+  color: #fff;
+}
+
+.hero-subtitle {
+  font-size: 1.1rem;
+  font-weight: 300;
+  letter-spacing: 0.5px;
+  margin-bottom: 25px;
+  color: #ddd;
+}
+
+.breadcrumbs {
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.breadcrumbs a {
+  color: #ccc;
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+.breadcrumbs a:hover {
+  color: #d4af37;
+}
+
+.breadcrumbs .separator {
+  margin: 0 10px;
+  color: #666;
+}
+
+.breadcrumbs .current {
+  color: #d4af37;
+  font-weight: 600;
+}
+
+/* 2. MAIN CONTENT */
+.reach-us-content {
+  padding: 80px 0;
+}
+
+.reach-us-wrapper {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 50px;
+  align-items: start;
+}
+
+/* Form Column */
+.form-card {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+  border: 1px solid #f0f0f0;
+}
+
+.form-header {
+  padding: 40px 40px 0;
+}
+
+.form-header h3 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.8rem;
+  margin-bottom: 10px;
+  color: #1a1a1a;
+}
+
+.form-header p {
+  color: #666;
+  font-size: 0.95rem;
+}
+
+/* Info Column */
+.info-card {
+  background: #1a1a1a;
+  /* Dark theme for info card */
+  color: #fff;
+  padding: 40px;
+  border-radius: 12px;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+.info-card::before {
+  content: '';
+  position: absolute;
+  top: -50px;
+  right: -50px;
+  width: 150px;
+  height: 150px;
+  background: radial-gradient(circle, rgba(212, 175, 55, 0.2), transparent 70%);
+  border-radius: 50%;
+}
+
+.info-card h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: 2rem;
+  margin-bottom: 15px;
+  color: #d4af37;
+}
+
+.info-intro {
+  color: #bbb;
+  margin-bottom: 40px;
+  line-height: 1.6;
+}
+
+.contact-list {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.contact-item {
+  display: flex;
+  gap: 20px;
+}
+
+.icon-box {
+  width: 50px;
+  height: 50px;
+  background: #2a2a2a;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  color: #d4af37;
+  flex-shrink: 0;
+  border: 1px solid rgba(212, 175, 55, 0.2);
+}
+
+.details h4 {
+  font-size: 1.1rem;
+  margin-bottom: 5px;
+  color: #fff;
+  font-weight: 600;
+}
+
+.details p {
+  color: #aaa;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.details a {
+  color: #aaa;
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+.details a:hover {
+  color: #d4af37;
+}
+
+/* Social Connect */
+.social-connect {
+  margin-top: 50px;
+  padding-top: 30px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.social-connect h4 {
+  margin-bottom: 20px;
+  font-size: 1rem;
+  color: #fff;
+}
+
+.social-icons {
+  display: flex;
+  gap: 15px;
+}
+
+.social-link {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  transition: all 0.3s ease;
+}
+
+.social-link:hover {
+  background: #d4af37;
+  color: #1a1a1a;
+  transform: translateY(-3px);
+}
+
+.social-link.whatsapp:hover {
+  background: #25D366;
+  color: #fff;
+}
+
+/* 3. MAP SECTION */
+.map-section {
+  padding-bottom: 80px;
+}
+
+.map-container {
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  height: 450px;
+  background: #eee;
+}
+
+.map-container iframe {
+  filter: grayscale(20%);
+  /* Soft grayscale for elegance */
+  transition: filter 0.5s;
+}
+
+.map-container:hover iframe {
+  filter: grayscale(0%);
+}
+
+/* RESPONSIVE */
+@media (max-width: 992px) {
+  .reach-us-wrapper {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+
+  .info-column {
+    order: -1;
+    /* Info first on tablet? Or keep form first? Grid usually stacks form first on mobile if 1 col. */
+    /* Let's keep Default ordering: Form First */
+  }
+}
+
+@media (max-width: 768px) {
+  .hero-content h1 {
+    font-size: 2.5rem;
+  }
+
+  .form-header {
+    padding: 30px 20px 0;
+  }
+
+  .contact-form-premium {
+    padding: 20px;
+  }
+}
+
+@keyframes fadeDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

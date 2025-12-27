@@ -1,0 +1,134 @@
+/* PREMIUM FORM STYLES */
+.contact-form-premium {
+  padding: 40px;
+  background-color: #ffffff;
+}
+
+.form-message {
+  padding: 15px;
+  border-radius: 4px;
+  margin-bottom: 25px;
+  text-align: center;
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+
+.form-message.success {
+  background-color: #d4edda;
+  color: #155724;
+  border-left: 4px solid #28a745;
+}
+
+.form-message.error {
+  background-color: #f8d7da;
+  color: #721c24;
+  border-left: 4px solid #dc3545;
+}
+
+.form-group {
+  margin-bottom: 25px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: #333;
+  font-size: 0.9rem;
+  letter-spacing: 0.5px;
+}
+
+.input-with-icon {
+  position: relative;
+}
+
+.input-icon {
+  position: absolute;
+  left: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #999;
+  font-size: 1rem;
+  pointer-events: none;
+  transition: color 0.3s;
+}
+
+.textarea-icon {
+  top: 20px;
+  transform: none;
+}
+
+.input-with-icon input,
+.input-with-icon select,
+.input-with-icon textarea {
+  width: 100%;
+  padding: 14px 14px 14px 45px;
+  /* Space for icon */
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  font-size: 15px;
+  color: #333;
+  transition: all 0.3s;
+  background: #fdfdfd;
+  font-family: inherit;
+}
+
+.input-with-icon select {
+  appearance: none;
+  cursor: pointer;
+}
+
+.input-with-icon input:focus,
+.input-with-icon select:focus,
+.input-with-icon textarea:focus {
+  outline: none;
+  border-color: #d4af37;
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+}
+
+/* Highlight icon on focus (requires :focus-within on parent if supported, or JS. CSS pseudo :focus-within is widely supported now) */
+.input-with-icon:focus-within .input-icon {
+  color: #d4af37;
+}
+
+.submit-btn-premium {
+  width: 100%;
+  padding: 15px;
+  background: linear-gradient(135deg, #d4af37, #b89628);
+  color: #fff;
+  font-weight: 700;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-size: 1rem;
+  margin-top: 10px;
+}
+
+.submit-btn-premium:hover:not(:disabled) {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 20px rgba(212, 175, 55, 0.25);
+  background: linear-gradient(135deg, #e5be3e, #cba534);
+}
+
+.submit-btn-premium:disabled {
+  opacity: 0.7;
+  cursor: wait;
+}
+
+.privacy-note {
+  margin-top: 15px;
+  font-size: 0.8rem;
+  color: #999;
+  text-align: center;
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+  .contact-form-premium {
+    padding: 25px;
+  }
+}
