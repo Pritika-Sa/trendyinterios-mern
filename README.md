@@ -20,9 +20,6 @@ Before you begin, ensure you have the following installed:
 - **MongoDB** (v4.0 or higher) - [Download Community Edition](https://www.mongodb.com/try/download/community)
 - **Git** - [Download](https://git-scm.com/)
 
-# TrendyInterios MERN Stack Clone
-
-A complete full-stack web application built with MongoDB, Express, React, and Node.js - an exact clone of the TrendyInterios interior design website.
 
 ## Features
 
@@ -129,10 +126,3 @@ The app will open at: http://localhost:3000
 4. Try submitting a testimonial
 5. Check browser console for errors
 6. Check terminal for server logs
-
-- Verify port 27017 is not blocked
-
-### Port Already in Use
-Kill process using port 5000
-lsof -i :5000
-kill -9 <PID>
