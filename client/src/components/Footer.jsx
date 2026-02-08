@@ -41,7 +41,7 @@ const Footer = () => {
               <Link to="/testimonials">Testimonials</Link>
             </li>
             <li>
-              <Link to="/registers">Give Testimonial</Link>
+              <Link to="/give-testimonial">Give Testimonial</Link>
             </li>
             <li>
               <Link to="/reachus">Contact Us</Link>
@@ -110,32 +110,6 @@ const Footer = () => {
         </div>
       </div>
 
-      {/* Newsletter Section */}
-      <div className="footer-newsletter">
-        <div className="newsletter-container">
-          <h3>Subscribe to Our Newsletter</h3>
-          <p>Get the latest design trends and exclusive offers</p>
-          <div className="newsletter-form">
-            <input type="email" placeholder="Enter your email address" />
-            <button className="btn-newsletter">Subscribe</button>
-          </div>
-        </div>
-      </div>
-
-      {/* Google Map */}
-      <div className="footer-map">
-        <iframe
-          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3914.0!2d77.7!3d11.35!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTHCsDIxJzAwLjAiTiA3N8KwNDInMDAuMCJF!5e0!3m2!1sen!2sin!4v1234567890"
-          width="100%"
-          height="300"
-          style={{ border: 0 }}
-          allowFullScreen=""
-          loading="lazy"
-          referrerPolicy="no-referrer-when-downgrade"
-          title="TrendyInterios Location"
-        ></iframe>
-      </div>
-
       {/* Footer Bottom */}
       <div className="footer-bottom">
         <div className="footer-bottom-container">
@@ -151,7 +125,7 @@ const Footer = () => {
 
           <p>
             Designed with <span className="heart">❤</span> by{' '}
-            <a href="#" className="developer-link">Genewtech</a>
+            <span className="developer-link">Genewtech</span>
           </p>
         </div>
       </div>

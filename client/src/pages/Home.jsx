@@ -1,9 +1,78 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { FaHandshake, FaPalette, FaFileInvoiceDollar, FaClipboardCheck, FaTruck, FaTools, FaCheckCircle, FaKey } from 'react-icons/fa';
 import Carousel from '../components/Carousel';
+import PremiumSectionHeader from '../components/PremiumSectionHeader';
+import { useAuth } from '../context/AuthContext';
 import './Home.css';
+import './PremiumSectionHeader.css';
+import './HomeEnhancements.css';
 
 const Home = () => {
+  const { user } = useAuth();
+  const [projects, setProjects] = useState([]);
+  const [loadingProjects, setLoadingProjects] = useState(true);
+  const [testimonials, setTestimonials] = useState([]);
+  const [loadingTestimonials, setLoadingTestimonials] = useState(true);
+  const [services, setServices] = useState([]);
+  const [loadingServices, setLoadingServices] = useState(true);
+
+  useEffect(() => {
+    const fetchLatestProjects = async () => {
+      try {
+        const response = await fetch('http://localhost:5000/api/projects?limit=6');
+        const data = await response.json();
+        if (data.success && data.data.length > 0) {
+          setProjects(data.data);
+        } else {
+          // Fallback to static if no projects in DB
+          setProjects(staticProjects);
+        }
+      } catch (error) {
+        console.error('Error fetching projects:', error);
+        setProjects(staticProjects);
+      } finally {
+        setLoadingProjects(false);
+      }
+    };
+
+    const fetchApprovedTestimonials = async () => {
+      try {
+        const response = await fetch('http://localhost:5000/api/testimonials');
+        const data = await response.json();
+        if (data.success) {
+          setTestimonials(data.data);
+        }
+      } catch (error) {
+        console.error('Error fetching testimonials:', error);
+      } finally {
+        setLoadingTestimonials(false);
+      }
+    };
+
+    const fetchServices = async () => {
+      try {
+        const response = await fetch('http://localhost:5000/api/services');
+        const data = await response.json();
+        if (data.success && data.data.length > 0) {
+          setServices(data.data);
+        } else {
+          // Fallback to default services if no data in DB
+          setServices(defaultServices);
+        }
+      } catch (error) {
+        console.error('Error fetching services:', error);
+        setServices(defaultServices);
+      } finally {
+        setLoadingServices(false);
+      }
+    };
+
+    fetchLatestProjects();
+    fetchApprovedTestimonials();
+    fetchServices();
+  }, []);
+
   const heroSlides = [
     {
       image: 'https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?q=80&w=1974&auto=format&fit=crop',
@@ -27,7 +96,7 @@ const Home = () => {
     },
   ];
 
-  const services = [
+  const defaultServices = [
     {
       title: 'Interior Design',
       description:
@@ -48,35 +117,35 @@ const Home = () => {
     },
   ];
 
-  const projects = [
+  const staticProjects = [
     {
       title: 'Luxury Kitchen Interior',
-      location: 'Erode, Tamil Nadu',
+      description: 'Erode, Tamil Nadu',
       image: 'https://images.unsplash.com/photo-1556911220-bff31c812dba?q=80&w=2068&auto=format&fit=crop',
     },
     {
       title: 'Contemporary Living Room',
-      location: 'Chennai, Tamil Nadu',
+      description: 'Chennai, Tamil Nadu',
       image: 'https://images.unsplash.com/photo-1600210492493-0946911123ea?q=80&w=1974&auto=format&fit=crop',
     },
     {
       title: 'Master Bedroom Suite',
-      location: 'Coimbatore, Tamil Nadu',
+      description: 'Coimbatore, Tamil Nadu',
       image: 'https://images.unsplash.com/photo-1616594039964-ae9021a400a0?q=80&w=2070&auto=format&fit=crop',
     },
     {
       title: 'Wardrobe & Dressing',
-      location: 'Erode, Tamil Nadu',
+      description: 'Erode, Tamil Nadu',
       image: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?q=80&w=2069&auto=format&fit=crop',
     },
     {
       title: 'TV Unit with Paneling',
-      location: 'Salem, Tamil Nadu',
+      description: 'Salem, Tamil Nadu',
       image: 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?q=80&w=2053&auto=format&fit=crop',
     },
     {
       title: 'Modern Office Space',
-      location: 'Bangalore, Karnataka',
+      description: 'Bangalore, Karnataka',
       image: 'https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=2069&auto=format&fit=crop',
     },
   ];
@@ -166,15 +235,20 @@ const Home = () => {
       <section className="hero-section">
         <Carousel slides={heroSlides} autoPlay={true} interval={5000} />
         <div className="tagline">
+          {user && (
+            <div className="welcome-message">
+              <p className="welcome-text">Welcome to Trendy Interiors! 👋</p>
+            </div>
+          )}
           <h1>Filling the Heart, Not Just Space</h1>
           <p>Premium Interior Design Solutions for Modern Living</p>
           <div className="hero-cta-buttons">
-            <button className="btn-primary">
+            <Link to="/projects" className="btn-primary" style={{ textDecoration: 'none' }}>
               View Projects
-            </button>
-            <button className="btn-secondary">
+            </Link>
+            <Link to="/reachus" className="btn-secondary" style={{ textDecoration: 'none' }}>
               Get Free Consultation
-            </button>
+            </Link>
           </div>
         </div>
       </section>
@@ -182,22 +256,17 @@ const Home = () => {
       {/* What We Do Section */}
       <section className="services-section">
         <div className="container">
-          <div className="section-header">
-            <div className="section-subtitle-line"></div>
-            <h2>WHAT WE DO</h2>
-            <p className="section-subtitle">Crafting exceptional spaces with passion and precision</p>
-          </div>
+          <PremiumSectionHeader
+            sectionName="OUR EXPERTISE"
+            title="What We Do Best"
+            subtitle="Crafting exceptional spaces with passion and precision"
+          />
           <div className="services-grid">
             {services.map((service, index) => (
               <div key={index} className="service-card">
                 <div className="service-icon">{service.icon}</div>
                 <h3>{service.title}</h3>
                 <p>{service.description}</p>
-                <div className="read-more-wrapper">
-                  <button className="read-more-btn">
-                    Learn More
-                  </button>
-                </div>
               </div>
             ))}
           </div>
@@ -207,20 +276,18 @@ const Home = () => {
       {/* Latest Projects Section */}
       <section className="projects-section">
         <div className="container">
-          <div className="section-header">
-            <div className="section-subtitle-line"></div>
-            <h2>LATEST PROJECTS</h2>
-            <p className="section-subtitle" style={{ color: 'var(--color-gray-light)' }}>
-              Explore our portfolio of stunning interior transformations
-            </p>
-          </div>
+          <PremiumSectionHeader
+            sectionName="PORTFOLIO"
+            title="Latest Projects"
+            subtitle="Explore our portfolio of stunning interior transformations"
+          />
           <div className="projects-grid">
             {projects.map((project, index) => (
               <div key={index} className="project-card">
                 <img src={project.image} alt={project.title} />
                 <h3>
                   {project.title}
-                  <span className="project-location">{project.location}</span>
+                  <span className="project-location">{project.description}</span>
                 </h3>
               </div>
             ))}
@@ -231,13 +298,11 @@ const Home = () => {
       {/* Our Design Journey Section */}
       <section className="design-process-section">
         <div className="container">
-          <div className="section-header">
-            <div className="section-subtitle-line"></div>
-            <h2>Our Design Journey</h2>
-            <p className="section-subtitle">
-              From Concept to Completion - A Seamless Experience
-            </p>
-          </div>
+          <PremiumSectionHeader
+            sectionName="PROCESS"
+            title="Our Design Journey"
+            subtitle="From Concept to Completion - A Seamless Experience"
+          />
           <div className="design-process-timeline">
             {designProcess.map((item, index) => (
               <div key={index} className="process-step">
@@ -261,71 +326,74 @@ const Home = () => {
       {/* Customer Reviews Section */}
       <section className="testimonials-section">
         <div className="container">
-          <div className="section-header">
-            <div className="section-subtitle-line"></div>
-            <h2>WHAT OUR CLIENTS SAY</h2>
-            <p className="section-subtitle">
-              Trusted by 200+ happy homeowners across India
-            </p>
-          </div>
+          <PremiumSectionHeader
+            sectionName="TESTIMONIALS"
+            title="What Our Clients Say"
+            subtitle="Trusted by 200+ happy homeowners across India"
+          />
 
           <div className="testimonials-carousel">
-            <div className="testimonial-card">
-              <div className="quote-icon">"</div>
-              <div className="stars">★★★★★</div>
-              <p className="testimonial-text">
-                "TrendyInterios transformed our home into a masterpiece! Their attention to detail and creative design solutions exceeded our expectations. The team was professional, timely, and truly understood our vision."
-              </p>
-              <div className="customer-info">
-                <img
-                  src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop"
-                  alt="Priya Sharma"
-                  className="customer-avatar"
-                />
-                <div className="customer-details">
-                  <h4>Priya Sharma</h4>
-                  <p>Chennai, Tamil Nadu</p>
+            {loadingTestimonials ? (
+              <p className="loading-text" style={{ textAlign: 'center', color: 'var(--color-gold)' }}>Loading testimonials...</p>
+            ) : testimonials.length === 0 ? (
+              // Fallback to static testimonials if DB is empty
+              [
+                {
+                  name: 'Priya Sharma',
+                  location: 'Chennai, Tamil Nadu',
+                  text: 'TrendyInterios transformed our home into a masterpiece! Their attention to detail and creative design solutions exceeded our expectations.',
+                  image: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop'
+                },
+                {
+                  name: 'Rajesh Kumar',
+                  location: 'Erode, Tamil Nadu',
+                  text: 'Exceptional service from start to finish! The modular kitchen design is both beautiful and functional.',
+                  image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop'
+                },
+                {
+                  name: 'Ananya Reddy',
+                  location: 'Coimbatore, Tamil Nadu',
+                  text: "Outstanding craftsmanship and innovative designs! Our bedroom and living room look absolutely stunning.",
+                  image: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop'
+                }
+              ].map((t, idx) => (
+                <div key={idx} className="testimonial-card">
+                  <div className="quote-icon">"</div>
+                  <div className="stars">★★★★★</div>
+                  <p className="testimonial-text">"{t.text}"</p>
+                  <div className="customer-info">
+                    <img src={t.image} alt={t.name} className="customer-avatar" />
+                    <div className="customer-details">
+                      <h4>{t.name}</h4>
+                      <p>{t.location}</p>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
-
-            <div className="testimonial-card">
-              <div className="quote-icon">"</div>
-              <div className="stars">★★★★★</div>
-              <p className="testimonial-text">
-                "Exceptional service from start to finish! The modular kitchen design is both beautiful and functional. Every detail was carefully planned and executed. Highly recommend TrendyInterios for premium interiors."
-              </p>
-              <div className="customer-info">
-                <img
-                  src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop"
-                  alt="Rajesh Kumar"
-                  className="customer-avatar"
-                />
-                <div className="customer-details">
-                  <h4>Rajesh Kumar</h4>
-                  <p>Erode, Tamil Nadu</p>
+              ))
+            ) : (
+              testimonials.slice(0, 3).map((t, index) => (
+                <div key={t._id || index} className="testimonial-card">
+                  <div className="quote-icon">"</div>
+                  <div className="stars">
+                    {Array.from({ length: 5 }).map((_, i) => (
+                      <span key={i} style={{ color: i < (Number(t.rating) || 5) ? 'var(--color-gold)' : '#e4e5e9' }}>
+                        ★
+                      </span>
+                    ))}
+                  </div>
+                  <p className="testimonial-text">"{t.testimonialText}"</p>
+                  <div className="customer-info">
+                    <div className="customer-avatar" style={{ background: 'var(--color-gold)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'black', fontWeight: 'bold' }}>
+                      {t.name.charAt(0)}
+                    </div>
+                    <div className="customer-details">
+                      <h4>{t.name}</h4>
+                      <p>{t.postalAddress || 'India'}</p>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
-
-            <div className="testimonial-card">
-              <div className="quote-icon">"</div>
-              <div className="stars">★★★★★</div>
-              <p className="testimonial-text">
-                "Outstanding craftsmanship and innovative designs! Our bedroom and living room look absolutely stunning. The team's professionalism and dedication to quality is truly commendable."
-              </p>
-              <div className="customer-info">
-                <img
-                  src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop"
-                  alt="Ananya Reddy"
-                  className="customer-avatar"
-                />
-                <div className="customer-details">
-                  <h4>Ananya Reddy</h4>
-                  <p>Coimbatore, Tamil Nadu</p>
-                </div>
-              </div>
-            </div>
+              ))
+            )}
           </div>
 
           <div className="trust-badges">
@@ -357,13 +425,11 @@ const Home = () => {
       {/* Our Services Section */}
       <section className="our-services-section">
         <div className="container">
-          <div className="section-header">
-            <div className="section-subtitle-line"></div>
-            <h2>OUR SERVICES</h2>
-            <p className="section-subtitle">
-              Comprehensive interior design solutions for every space
-            </p>
-          </div>
+          <PremiumSectionHeader
+            sectionName="SERVICES"
+            title="Our Interior Solutions"
+            subtitle="Comprehensive interior design solutions for every space"
+          />
           <div className="services-detail-grid">
             {ourServices.map((service, index) => (
               <div key={index} className="service-detail">
@@ -372,39 +438,6 @@ const Home = () => {
                 </div>
                 <h3>{service.title}</h3>
                 <p>{service.description}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Latest News Section */}
-      <section className="news-section">
-        <div className="container">
-          <div className="section-header">
-            <div className="section-subtitle-line"></div>
-            <h2>LATEST NEWS & INSIGHTS</h2>
-            <p className="section-subtitle">
-              Stay updated with the latest trends and design inspiration
-            </p>
-          </div>
-          <div className="news-grid">
-            {news.map((item, index) => (
-              <div key={index} className="news-card">
-                <img src={item.image} alt={item.title} className="news-card-image" />
-                <div className="news-card-content">
-                  <span className="news-category">{item.category}</span>
-                  <h3>{item.title}</h3>
-                  <div className="news-meta">
-                    <span>📅 {item.date}</span>
-                    <span>✍️ {item.author}</span>
-                    <span>💬 {item.comments} comments</span>
-                  </div>
-                  <p>{item.excerpt}</p>
-                  <button className="read-more-btn">
-                    Read Full Article
-                  </button>
-                </div>
               </div>
             ))}
           </div>

@@ -5,7 +5,8 @@
   background: #fdfdfd;
 }
 
-/* 1. HERO SECTION */
+/* ================= HERO SECTION ================= */
+
 .reach-hero {
   position: relative;
   height: 400px;
@@ -20,11 +21,10 @@
 
 .hero-overlay {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(135deg, rgba(20, 30, 48, 0.9), rgba(36, 59, 85, 0.8));
+  inset: 0;
+  background: linear-gradient(135deg,
+      rgba(20, 30, 48, 0.9),
+      rgba(36, 59, 85, 0.8));
 }
 
 .hero-content {
@@ -41,16 +41,16 @@
   font-weight: 700;
   letter-spacing: 2px;
   margin-bottom: 15px;
-  color: #fff;
 }
 
 .hero-subtitle {
   font-size: 1.1rem;
   font-weight: 300;
-  letter-spacing: 0.5px;
   margin-bottom: 25px;
   color: #ddd;
 }
+
+/* ================= BREADCRUMB ================= */
 
 .breadcrumbs {
   font-size: 0.9rem;
@@ -61,7 +61,6 @@
 .breadcrumbs a {
   color: #ccc;
   text-decoration: none;
-  transition: color 0.3s;
 }
 
 .breadcrumbs a:hover {
@@ -78,7 +77,8 @@
   font-weight: 600;
 }
 
-/* 2. MAIN CONTENT */
+/* ================= MAIN CONTENT ================= */
+
 .reach-us-content {
   padding: 80px 0;
 }
@@ -90,12 +90,12 @@
   align-items: start;
 }
 
-/* Form Column */
+/* ================= FORM CARD ================= */
+
 .form-card {
   background: #fff;
   border-radius: 12px;
   box-shadow: 0 15px 40px rgba(0, 0, 0, 0.05);
-  overflow: hidden;
   border: 1px solid #f0f0f0;
 }
 
@@ -115,14 +115,13 @@
   font-size: 0.95rem;
 }
 
-/* Info Column */
+/* ================= INFO CARD ================= */
+
 .info-card {
   background: #1a1a1a;
-  /* Dark theme for info card */
   color: #fff;
   padding: 40px;
   border-radius: 12px;
-  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
   position: relative;
   overflow: hidden;
 }
@@ -134,7 +133,7 @@
   right: -50px;
   width: 150px;
   height: 150px;
-  background: radial-gradient(circle, rgba(212, 175, 55, 0.2), transparent 70%);
+  background: radial-gradient(circle, rgba(212, 175, 55, 0.25), transparent 70%);
   border-radius: 50%;
 }
 
@@ -151,6 +150,8 @@
   line-height: 1.6;
 }
 
+/* ================= CONTACT LIST ================= */
+
 .contact-list {
   display: flex;
   flex-direction: column;
@@ -159,8 +160,10 @@
 
 .contact-item {
   display: flex;
-  gap: 20px;
+  gap: 18px;
 }
+
+/* ICON — FINAL FIX */
 
 .icon-box {
   width: 50px;
@@ -173,25 +176,32 @@
   font-size: 1.2rem;
   color: #d4af37;
   flex-shrink: 0;
-  border: 1px solid rgba(212, 175, 55, 0.2);
+}
+
+/* TEXT */
+
+.details {
+  flex: 1;
 }
 
 .details h4 {
+  margin: 0 0 5px 0;
+  line-height: 1.2;
   font-size: 1.1rem;
-  margin-bottom: 5px;
-  color: #fff;
   font-weight: 600;
+  color: #fff;
+  /* Make visible on dark background */
 }
 
 .details p {
-  color: #aaa;
-  font-size: 0.9rem;
-  line-height: 1.6;
   margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: #ccc;
 }
 
 .details a {
-  color: #aaa;
+  color: #ccc;
   text-decoration: none;
   transition: color 0.3s;
 }
@@ -200,17 +210,12 @@
   color: #d4af37;
 }
 
-/* Social Connect */
+/* ================= SOCIAL ================= */
+
 .social-connect {
   margin-top: 50px;
   padding-top: 30px;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.social-connect h4 {
-  margin-bottom: 20px;
-  font-size: 1rem;
-  color: #fff;
 }
 
 .social-icons {
@@ -227,7 +232,7 @@
   align-items: center;
   justify-content: center;
   color: #fff;
-  transition: all 0.3s ease;
+  transition: 0.3s ease;
 }
 
 .social-link:hover {
@@ -237,26 +242,25 @@
 }
 
 .social-link.whatsapp:hover {
-  background: #25D366;
+  background: #25d366;
   color: #fff;
 }
 
-/* 3. MAP SECTION */
+/* ================= MAP ================= */
+
 .map-section {
   padding-bottom: 80px;
 }
 
 .map-container {
+  height: 450px;
   border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-  height: 450px;
-  background: #eee;
 }
 
 .map-container iframe {
   filter: grayscale(20%);
-  /* Soft grayscale for elegance */
   transition: filter 0.5s;
 }
 
@@ -264,17 +268,12 @@
   filter: grayscale(0%);
 }
 
-/* RESPONSIVE */
+/* ================= RESPONSIVE ================= */
+
 @media (max-width: 992px) {
   .reach-us-wrapper {
     grid-template-columns: 1fr;
     gap: 40px;
-  }
-
-  .info-column {
-    order: -1;
-    /* Info first on tablet? Or keep form first? Grid usually stacks form first on mobile if 1 col. */
-    /* Let's keep Default ordering: Form First */
   }
 }
 
@@ -286,11 +285,23 @@
   .form-header {
     padding: 30px 20px 0;
   }
+}
 
-  .contact-form-premium {
-    padding: 20px;
+@media (max-width: 576px) {
+  .contact-item {
+    gap: 14px;
+  }
+
+  .icon-box {
+    margin-top: 8px;
+  }
+
+  .details p {
+    font-size: 0.85rem;
   }
 }
+
+/* ================= ANIMATION ================= */
 
 @keyframes fadeDown {
   from {

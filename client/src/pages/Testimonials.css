@@ -166,7 +166,29 @@
   line-height: 1.6;
 }
 
-/* GRID */
+/* GRID - 3x3 Format */
+.testimonials-grid-3x3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 30px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* Responsive Grid */
+@media (max-width: 1200px) {
+  .testimonials-grid-3x3 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .testimonials-grid-3x3 {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Legacy Grid (fallback) */
 .testimonials-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
@@ -270,6 +292,16 @@
 .testimonial-cta {
   padding-bottom: 100px;
 }
+.cta-action {
+  position: relative;
+  z-index: 10;
+}
+
+.btn-gold-outline {
+  position: relative;
+  z-index: 11;
+  pointer-events: auto;
+}
 
 .cta-box {
   background: linear-gradient(135deg, #1a1a1a, #2c3e50);
@@ -328,6 +360,44 @@
   color: #1a1a1a;
   transform: translateY(-3px);
   box-shadow: 0 5px 20px rgba(212, 175, 55, 0.3);
+}
+/* CTA Give Testimonial Button */
+.testimonial-cta .btn-gold-outline {
+  background: transparent;              /* 🔥 White remove */
+  color: #d4af37;                        /* Gold text */
+  border: 2px solid #d4af37;             /* Gold border */
+  padding: 12px 26px;
+  border-radius: 30px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+/* Hover effect */
+.testimonial-cta .btn-gold-outline:hover {
+  background: #d4af37;                   /* Gold fill on hover */
+  color: #0f172a;                        /* Dark text */
+  transform: translateY(-2px);
+}
+
+/* Icon color sync */
+.testimonial-cta .btn-gold-outline .btn-icon {
+  font-size: 14px;
+}
+
+.testimonial-cta {
+  position: relative;
+  z-index: 1;
+}
+
+.cta-action,
+.cta-action button {
+  position: relative;
+  z-index: 5;
+  pointer-events: auto;
 }
 
 /* LOADING & EMPTY */

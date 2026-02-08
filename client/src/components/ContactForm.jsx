@@ -1,19 +1,25 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { FaUser, FaEnvelope, FaTag, FaPhone, FaPen, FaMapMarkerAlt } from 'react-icons/fa';
+import { FaUser, FaEnvelope, FaTag, FaPhone, FaPen, FaMapMarkerAlt, FaLock, FaStar } from 'react-icons/fa';
+import { useAuth } from '../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
 import './ContactForm.css';
 
 const ContactForm = ({ formType = 'contact' }) => {
+  const { user, token } = useAuth();
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
+    name: user?.name || '',
+    email: user?.email || '',
     purpose: '',
     mobileNumber: '',
     message: '',
     postalAddress: '',
     testimonialText: '',
+    rating: 5
   });
 
+  const [hover, setHover] = useState(null);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
 
@@ -33,27 +39,53 @@ const ContactForm = ({ formType = 'contact' }) => {
     try {
       let endpoint = '';
       let payload = {};
+      let headers = {};
 
       if (formType === 'contact') {
         endpoint = '/api/contacts';
+
+        const cleanMobile = formData.mobileNumber.replace(/\D/g, '').slice(-10);
+        if (cleanMobile.length !== 10) {
+          setMessage('Please provide a valid 10-digit mobile number');
+          setLoading(false);
+          return;
+        }
+
         payload = {
           name: formData.name,
           email: formData.email,
           purpose: formData.purpose,
-          mobileNumber: formData.mobileNumber,
+          mobileNumber: cleanMobile,
           message: formData.message,
         };
       } else if (formType === 'testimonial') {
         endpoint = '/api/testimonials';
+
+        // 1. Validate Testimonial Length
+        if (formData.testimonialText.trim().length < 20) {
+          setMessage('Give testimonial above 20 characters');
+          setLoading(false);
+          return;
+        }
+
+        // 2. Validate Mobile Number
+        const cleanMobile = formData.mobileNumber.replace(/\D/g, '').slice(-10);
+        if (cleanMobile.length !== 10) {
+          setMessage('Please provide a valid 10-digit mobile number');
+          setLoading(false);
+          return;
+        }
+
         payload = {
           name: formData.name,
           postalAddress: formData.postalAddress,
-          mobileNumber: formData.mobileNumber,
+          mobileNumber: cleanMobile,
           testimonialText: formData.testimonialText,
+          rating: Number(formData.rating)
         };
       }
 
-      await axios.post(endpoint, payload);
+      await axios.post(`http://localhost:5000${endpoint}`, payload, { headers });
 
       setMessage(`Thank you! Your ${formType === 'contact' ? 'message' : 'testimonial'} has been sent successfully.`);
       setFormData({
@@ -64,9 +96,11 @@ const ContactForm = ({ formType = 'contact' }) => {
         message: '',
         postalAddress: '',
         testimonialText: '',
+        rating: 5
       });
     } catch (error) {
-      setMessage('Something went wrong. Please try again later.');
+      const errorMsg = error.response?.data?.message || error.response?.data?.error || 'Something went wrong. Please try again later.';
+      setMessage(errorMsg);
     } finally {
       setLoading(false);
     }
@@ -138,21 +172,53 @@ const ContactForm = ({ formType = 'contact' }) => {
       )}
 
       {formType === 'testimonial' && (
-        <div className="form-group">
-          <label htmlFor="postalAddress">Location / Project</label>
-          <div className="input-with-icon">
-            <FaMapMarkerAlt className="input-icon" />
-            <input
-              type="text"
-              id="postalAddress"
-              name="postalAddress"
-              value={formData.postalAddress}
-              onChange={handleChange}
-              required
-              placeholder="e.g. Dream Villa, Erode"
-            />
+        <>
+          <div className="form-group">
+            <label htmlFor="postalAddress">Location / Project</label>
+            <div className="input-with-icon">
+              <FaMapMarkerAlt className="input-icon" />
+              <input
+                type="text"
+                id="postalAddress"
+                name="postalAddress"
+                value={formData.postalAddress}
+                onChange={handleChange}
+                required
+                placeholder="e.g. Dream Villa, Erode"
+              />
+            </div>
           </div>
-        </div>
+
+          <div className="form-group">
+            <label>Your Rating</label>
+            <div className="star-rating" style={{ display: 'flex', gap: '5px', padding: '5px 0' }}>
+              {[...Array(5)].map((_, index) => {
+                const ratingValue = index + 1;
+                return (
+                  <label key={index} style={{ cursor: 'pointer' }}>
+                    <input
+                      type="radio"
+                      name="rating"
+                      value={ratingValue}
+                      checked={formData.rating === ratingValue}
+                      onChange={() => setFormData(prev => ({ ...prev, rating: ratingValue }))}
+                      style={{ display: 'none' }}
+                    />
+                    <FaStar
+                      className="star"
+                      color={ratingValue <= (hover || formData.rating) ? "#ffc107" : "#e4e5e9"}
+                      size={28}
+                      onMouseEnter={() => setHover(ratingValue)}
+                      onMouseLeave={() => setHover(null)}
+                      onClick={() => setFormData(prev => ({ ...prev, rating: ratingValue }))}
+                      style={{ transition: 'color 200ms' }}
+                    />
+                  </label>
+                );
+              })}
+            </div>
+          </div>
+        </>
       )}
 
       <div className="form-group">
@@ -166,8 +232,8 @@ const ContactForm = ({ formType = 'contact' }) => {
             value={formData.mobileNumber}
             onChange={handleChange}
             required
-            placeholder="+91 XXXXX XXXXX"
-            pattern="\d{10,12}"
+            placeholder="10-digit mobile number"
+            pattern="\d{10}"
           />
         </div>
       </div>

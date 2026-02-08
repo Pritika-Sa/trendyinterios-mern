@@ -39,38 +39,47 @@
 }
 
 .input-with-icon {
-  position: relative;
+  position: relative !important;
+  display: block !important;
+  width: 100% !important;
 }
 
 .input-icon {
-  position: absolute;
-  left: 15px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: #999;
-  font-size: 1rem;
-  pointer-events: none;
-  transition: color 0.3s;
+  position: absolute !important;
+  left: 18px !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  color: #d4af37 !important;
+  /* Gold icons look more premium */
+  font-size: 1.2rem !important;
+  pointer-events: none !important;
+  z-index: 10 !important;
+  transition: all 0.3s ease;
 }
 
 .textarea-icon {
-  top: 20px;
-  transform: none;
+  top: 25px !important;
+  transform: none !important;
 }
 
-.input-with-icon input,
-.input-with-icon select,
-.input-with-icon textarea {
-  width: 100%;
-  padding: 14px 14px 14px 45px;
-  /* Space for icon */
-  border: 1px solid #e0e0e0;
-  border-radius: 6px;
-  font-size: 15px;
-  color: #333;
-  transition: all 0.3s;
-  background: #fdfdfd;
-  font-family: inherit;
+/* ULTRA SPECIFIC SELECTOR TO FORCE PADDING */
+.contact-form-premium .input-with-icon input,
+.contact-form-premium .input-with-icon select,
+.contact-form-premium .input-with-icon textarea {
+  width: 100% !important;
+  padding: 14px 20px 14px 80px !important;
+  /* Increased to 80px to be absolutely sure */
+  border: 1px solid #d4af37 !important;
+  /* Sleek 1px gold border */
+  border-radius: 8px !important;
+  font-size: 16px !important;
+  color: #000000 !important;
+  /* Pure black text */
+  background-color: #ffffff !important;
+  transition: all 0.3s ease !important;
+  font-family: inherit !important;
+  display: block !important;
+  box-sizing: border-box !important;
 }
 
 .input-with-icon select {
@@ -87,9 +96,17 @@
   box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
 }
 
-/* Highlight icon on focus (requires :focus-within on parent if supported, or JS. CSS pseudo :focus-within is widely supported now) */
+/* Highlight icon on focus */
 .input-with-icon:focus-within .input-icon {
   color: #d4af37;
+}
+
+.input-with-icon input::placeholder,
+.input-with-icon textarea::placeholder,
+.input-with-icon select::placeholder {
+  color: #8a8a8a;
+  font-size: 14px;
+  opacity: 0.8;
 }
 
 .submit-btn-premium {
@@ -131,4 +148,42 @@
   .contact-form-premium {
     padding: 25px;
   }
+}
+
+/* Login Prompt */
+.login-prompt-wrapper {
+  text-align: center;
+  padding: 2rem;
+  background: rgba(212, 175, 55, 0.05);
+  border: 1px dashed #d4af37;
+  border-radius: 12px;
+  margin-top: 1rem;
+}
+
+.login-prompt-wrapper p {
+  color: #ccc;
+  margin-bottom: 1.5rem;
+  font-size: 1.05rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-login-redirect {
+  background: #d4af37;
+  color: #1a1a1a;
+  border: none;
+  padding: 0.8rem 2rem;
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.btn-login-redirect:hover {
+  background: #f4d03f;
+  transform: translateY(-2px);
+  box-shadow: 0 4.PROJECTS 15px rgba(212, 175, 55, 0.3);
 }
