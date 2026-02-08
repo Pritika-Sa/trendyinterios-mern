@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { FaBars, FaTimes, FaYoutube, FaHome, FaBuilding, FaPaintBrush, FaUtensils, FaCouch } from 'react-icons/fa';
+import { FaBars, FaTimes, FaYoutube, FaHome, FaBuilding, FaPaintBrush, FaUtensils, FaCouch, FaSignOutAlt, FaCrown, FaCog, FaList } from 'react-icons/fa';
+import { useAuth } from '../context/AuthContext';
 import './Header.css';
 
 const Header = () => {
@@ -8,6 +9,7 @@ const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState(null);
   const location = useLocation();
+  const { user, logout } = useAuth();
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -22,6 +24,11 @@ const Header = () => {
     setActiveDropdown(activeDropdown === dropdown ? null : dropdown);
   };
 
+  const handleLogout = () => {
+    logout();
+    closeMenu();
+  };
+
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
@@ -33,6 +40,8 @@ const Header = () => {
 
   // Helper to check if link is active
   const isActive = (path) => location.pathname === path;
+
+
 
   return (
     <header className={`header ${isScrolled ? 'scrolled' : ''}`}>
@@ -119,12 +128,34 @@ const Header = () => {
             Reach Us
           </Link>
           <Link
-            to="/registers"
-            className={`nav-link ${isActive('/registers') ? 'active' : ''}`}
+            to="/give-testimonial"
+            className={`nav-link ${isActive('/give-testimonial') ? 'active' : ''}`}
             onClick={closeMenu}
           >
             Give Testimonial
           </Link>
+
+          {/* Mobile Only: Auth Links */}
+          <div className="mobile-auth-links">
+            {user && user.role === 'admin' ? (
+              <>
+                <div className="mobile-user-info">
+                  <div className="mobile-avatar">
+                    <FaCrown />
+                  </div>
+                  <span>Admin</span>
+                </div>
+                <Link to="/admin" className="nav-link" onClick={closeMenu}>Dashboard</Link>
+                <Link to="/admin/projects" className="nav-link" onClick={closeMenu}>Manage Projects</Link>
+                <button className="nav-link" onClick={handleLogout} style={{ textAlign: 'left', background: 'none', border: 'none', color: '#fff', fontSize: '1.1rem' }}>
+                  Logout
+                </button>
+              </>
+            ) : (
+              /* Admin Login Only */
+              <Link to="/login" className="nav-link" onClick={closeMenu}>Admin Login</Link>
+            )}
+          </div>
         </nav>
 
         {/* Right Side Actions */}
@@ -154,7 +185,7 @@ const Header = () => {
             </div>
           </div>
 
-          {/* YouTube Icon with Tooltip */}
+          {/* YouTube Icon */}
           <a
             href="https://www.youtube.com/@TrendyInterioS-ql7rz"
             target="_blank"
@@ -166,6 +197,47 @@ const Header = () => {
               <FaYoutube />
             </div>
           </a>
+
+          {/* Admin / Auth Section */}
+          <div className="auth-action">
+            {user && user.role === 'admin' ? (
+              <div
+                className={`dropdown profile-dropdown-wrapper ${activeDropdown === 'profile' ? 'open' : ''}`}
+                onMouseEnter={() => window.innerWidth > 992 && setActiveDropdown('profile')}
+                onMouseLeave={() => window.innerWidth > 992 && setActiveDropdown(null)}
+              >
+                <button
+                  className="profile-button"
+                  onClick={() => toggleDropdown('profile')}
+                >
+                  <div className="profile-avatar">
+                    <FaCrown />
+                  </div>
+                </button>
+
+                <div className={`dropdown-menu ${activeDropdown === 'profile' ? 'active' : ''} profile-menu`}>
+                  <div className="profile-dropdown-header">
+                    <span className="profile-dropdown-name">Admin</span>
+                  </div>
+                  <Link to="/admin" className="profile-dropdown-item" onClick={closeMenu}>
+                    <FaCrown /> Dashboard
+                  </Link>
+                  <Link to="/admin/projects" className="profile-dropdown-item" onClick={closeMenu}>
+                    <FaList /> Manage Projects
+                  </Link>
+                  <div className="profile-dropdown-divider"></div>
+                  <button className="profile-dropdown-item logout-item" onClick={handleLogout}>
+                    <FaSignOutAlt /> Logout
+                  </button>
+                </div>
+              </div>
+            ) : (
+              /* Small Admin Link for non-logged in users */
+              <Link to="/login" className="admin-login-link" title="Admin Login">
+                <FaCog />
+              </Link>
+            )}
+          </div>
         </div>
 
         {/* Mobile Menu Toggle */}

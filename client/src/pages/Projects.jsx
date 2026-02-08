@@ -5,104 +5,138 @@ import './Projects.css';
 
 const Projects = () => {
   const [activeCategory, setActiveCategory] = useState('all');
+  const [allProjects, setAllProjects] = useState([]);
   const [visibleProjects, setVisibleProjects] = useState([]);
+  const [categories, setCategories] = useState([{ id: 'all', label: 'All Projects' }]);
   const [isAnimating, setIsAnimating] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   // Scroll to top on mount
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
-  const categories = [
-    { id: 'all', label: 'All Projects' },
-    { id: 'residential', label: 'Residential' },
-    { id: 'commercial', label: 'Commercial' },
-    { id: 'art-craft', label: 'Art & Craft' },
-  ];
+  // Fetch categories from database
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await fetch('http://localhost:5000/api/categories');
+        const data = await response.json();
+        if (data.success && data.data.length > 0) {
+          // Map database categories to button format
+          const dbCategories = data.data.map(cat => ({
+            id: cat.name,
+            label: cat.displayName || cat.name.charAt(0).toUpperCase() + cat.name.slice(1).replace(/-/g, ' ')
+          }));
+          setCategories([{ id: 'all', label: 'All Projects' }, ...dbCategories]);
+        } else {
+          // Use default categories if database is empty
+          setCategories([
+            { id: 'all', label: 'All Projects' },
+            { id: 'residential', label: 'Residential' },
+            { id: 'commercial', label: 'Commercial' },
+            { id: 'art-craft', label: 'Art & Craft' },
+          ]);
+        }
+      } catch (error) {
+        console.error('Error fetching categories:', error);
+        // Use default categories on error
+        setCategories([
+          { id: 'all', label: 'All Projects' },
+          { id: 'residential', label: 'Residential' },
+          { id: 'commercial', label: 'Commercial' },
+          { id: 'art-craft', label: 'Art & Craft' },
+        ]);
+      }
+    };
 
-  const allProjects = [
+    fetchCategories();
+  }, []);
+
+  // Fetch projects from database
+  useEffect(() => {
+    const fetchProjects = async () => {
+      try {
+        const response = await fetch('http://localhost:5000/api/projects');
+        const data = await response.json();
+        if (data.success && data.data.length > 0) {
+          setAllProjects(data.data);
+        } else {
+          // Fallback to static projects if database is empty
+          setAllProjects(staticProjects);
+        }
+      } catch (error) {
+        console.error('Error fetching projects:', error);
+        setAllProjects(staticProjects);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProjects();
+  }, []);
+
+  // Static fallback projects
+  const staticProjects = [
     {
-      id: 1,
-      name: 'Luxury Villa Interiors',
+      _id: '1',
+      title: 'Luxury Villa Interiors',
       category: 'residential',
-      location: 'Coimbatore',
-      year: '2024',
-      area: '3,500 sq.ft',
+      description: 'Coimbatore, Tamil Nadu',
       image: 'https://images.unsplash.com/photo-1600210492493-0946911123ea?q=80&w=1974&auto=format&fit=crop',
-      description: 'A modern luxury villa designed with warmth and elegance.',
     },
     {
-      id: 2,
-      name: 'Modern Tech Office',
+      _id: '2',
+      title: 'Modern Tech Office',
       category: 'commercial',
-      location: 'Bangalore',
-      year: '2023',
-      area: '12,000 sq.ft',
+      description: 'Bangalore, Karnataka',
       image: 'https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=2069&auto=format&fit=crop',
-      description: 'Open-plan office space fostering collaboration and innovation.',
     },
     {
-      id: 3,
-      name: 'Handcrafted Wall Art',
+      _id: '3',
+      title: 'Handcrafted Wall Art',
       category: 'art-craft',
-      location: 'Erode',
-      year: '2024',
-      area: 'N/A',
+      description: 'Erode, Tamil Nadu',
       image: 'https://images.unsplash.com/photo-1513519245088-0e12902e5a38?q=80&w=2070&auto=format&fit=crop',
-      description: 'Bespoke wall art pieces for a contemporary living room.',
     },
     {
-      id: 4,
-      name: 'Contemporary Kitchen',
+      _id: '4',
+      title: 'Contemporary Kitchen',
       category: 'residential',
-      location: 'Chennai',
-      year: '2023',
-      area: '450 sq.ft',
+      description: 'Chennai, Tamil Nadu',
       image: 'https://images.unsplash.com/photo-1556911220-bff31c812dba?q=80&w=2068&auto=format&fit=crop',
-      description: 'Modular kitchen with premium finish and smart storage.',
     },
     {
-      id: 5,
-      name: 'Boutique Showroom',
+      _id: '5',
+      title: 'Boutique Showroom',
       category: 'commercial',
-      location: 'Salem',
-      year: '2024',
-      area: '1,800 sq.ft',
+      description: 'Salem, Tamil Nadu',
       image: 'https://images.unsplash.com/photo-1541575765-8857d47453f2?q=80&w=2000&auto=format&fit=crop',
-      description: 'Elegant retail space designed to highlight premium products.',
     },
     {
-      id: 6,
-      name: 'Master Bedroom Suite',
+      _id: '6',
+      title: 'Master Bedroom Suite',
       category: 'residential',
-      location: 'Erode',
-      year: '2023',
-      area: '600 sq.ft',
+      description: 'Erode, Tamil Nadu',
       image: 'https://images.unsplash.com/photo-1616594039964-ae9021a400a0?q=80&w=2070&auto=format&fit=crop',
-      description: 'Serene master bedroom with custom wardrobe and lighting.',
     },
     {
-      id: 7,
-      name: 'Minimalist Living',
+      _id: '7',
+      title: 'Minimalist Living',
       category: 'residential',
-      location: 'Trichy',
-      year: '2024',
-      area: '2,200 sq.ft',
+      description: 'Trichy, Tamil Nadu',
       image: 'https://images.unsplash.com/photo-1628151016027-e81882d27771?q=80&w=2000&auto=format&fit=crop',
-      description: 'Clean lines and neutral tones for a clutter-free home.',
     },
     {
-      id: 8,
-      name: 'Executive Cabin',
+      _id: '8',
+      title: 'Executive Cabin',
       category: 'commercial',
-      location: 'Coimbatore',
-      year: '2023',
-      area: '300 sq.ft',
+      description: 'Coimbatore, Tamil Nadu',
       image: 'https://images.unsplash.com/photo-1504384308090-c54be3855091?q=80&w=2000&auto=format&fit=crop',
-      description: 'Premium executive workspace with soundproofing and luxury finish.',
     },
   ];
 
+  // Filter projects when category changes
   useEffect(() => {
     setIsAnimating(true);
     const filtered = activeCategory === 'all'
@@ -116,7 +150,7 @@ const Projects = () => {
     }, 300);
 
     return () => clearTimeout(timer);
-  }, [activeCategory]);
+  }, [activeCategory, allProjects]);
 
   return (
     <div className="projects-page">
@@ -154,13 +188,13 @@ const Projects = () => {
           {/* Projects Grid */}
           <div className={`projects-grid ${isAnimating ? 'fade-out' : 'fade-in'}`}>
             {visibleProjects.map((project) => (
-              <div key={project.id} className="project-card-premium">
+              <div key={project._id} className="project-card-premium">
                 <div className="project-image-wrapper">
-                  <img src={project.image} alt={project.name} />
+                  <img src={project.image} alt={project.title} />
                   <div className="project-overlay">
                     <div className="overlay-content">
                       <span className="project-badge">{project.category}</span>
-                      <h3>{project.name}</h3>
+                      <h3>{project.title}</h3>
                       <p className="project-app-desc">{project.description}</p>
                       <button className="view-project-btn">
                         View Project <FaLongArrowAltRight />
@@ -171,13 +205,7 @@ const Projects = () => {
 
                 <div className="project-meta-bar">
                   <div className="meta-item">
-                    <FaMapMarkerAlt /> {project.location}
-                  </div>
-                  <div className="meta-item">
-                    <FaCalendarAlt /> {project.year}
-                  </div>
-                  <div className="meta-item">
-                    <FaRulerCombined /> {project.area}
+                    <FaMapMarkerAlt /> {project.description}
                   </div>
                 </div>
               </div>
@@ -200,7 +228,9 @@ const Projects = () => {
           <div className="cta-content">
             <h2>Have a project in mind?</h2>
             <p>Let's collaborate to create something extraordinary for your space.</p>
-            <button className="btn-cta-gold">Get Free Consultation</button>
+            <Link to="/reachus" style={{ textDecoration: 'none' }}>
+              <button className="btn-cta-gold">Get Free Consultation</button>
+            </Link>
           </div>
         </div>
       </section>

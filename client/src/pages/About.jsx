@@ -1,16 +1,47 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
   FaCouch, FaBuilding, FaBed, FaDraftingCompass, FaChair, FaHandshake,
   FaTrophy, FaSmile, FaStopwatch, FaCheckCircle, FaQuoteLeft,
-  FaLinkedin, FaTwitter, FaInstagram, FaEye, FaBullseye, FaArrowRight
+  FaLinkedin, FaInstagram, FaPhone, FaEye, FaBullseye, FaArrowRight
 } from 'react-icons/fa';
 import './About.css';
 
 const About = () => {
+  const [teamMembers, setTeamMembers] = useState([]);
+  const [expertiseData, setExpertiseData] = useState([]);
+
   useEffect(() => {
     window.scrollTo(0, 0);
+    fetchTeamMembers();
+    fetchExpertise();
   }, []);
+
+  const fetchTeamMembers = async () => {
+    try {
+      const response = await fetch('http://localhost:5000/api/team-members');
+      const data = await response.json();
+      if (data.success) {
+        setTeamMembers(data.data);
+      }
+    } catch (error) {
+      console.error('Error fetching team members:', error);
+      setTeamMembers([]);
+    }
+  };
+
+  const fetchExpertise = async () => {
+    try {
+      const response = await fetch('http://localhost:5000/api/expertise');
+      const data = await response.json();
+      if (data.success) {
+        setExpertiseData(data.data);
+      }
+    } catch (error) {
+      console.error('Error fetching expertise:', error);
+      setExpertiseData([]);
+    }
+  };
 
   const services = [
     {
@@ -43,13 +74,6 @@ const About = () => {
       description: 'Bespoke furniture pieces tailored to your specific style and space requirements.',
       icon: <FaHandshake />,
     },
-  ];
-
-  const team = [
-    { name: 'Sarah Jenkins', role: 'Principal Architect', image: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=300&auto=format&fit=crop' },
-    { name: 'David Ross', role: 'Senior Interior Designer', image: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=300&auto=format&fit=crop' },
-    { name: 'Priya Sharma', role: 'Project Manager', image: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=300&auto=format&fit=crop' },
-    { name: 'Michael Chen', role: '3D Visualization Expert', image: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=300&auto=format&fit=crop' },
   ];
 
   const stats = [
@@ -161,16 +185,27 @@ const About = () => {
           </div>
 
           <div className="services-grid-premium">
-            {services.map((service, index) => (
-              <div key={index} className="service-card-premium">
-                <div className="service-icon-wrapper">
-                  {service.icon}
+            {expertiseData.length > 0 ? (
+              expertiseData.map((expertise) => (
+                <div key={expertise._id} className="service-card-premium">
+                  <div className="service-icon-wrapper">
+                    {expertise.icon}
+                  </div>
+                  <h3>{expertise.title}</h3>
+                  <p>{expertise.description}</p>
                 </div>
-                <h3>{service.title}</h3>
-                <p>{service.description}</p>
-                <Link to="/services" className="service-link">Learn More <FaArrowRight /></Link>
-              </div>
-            ))}
+              ))
+            ) : (
+              services.map((service, index) => (
+                <div key={index} className="service-card-premium">
+                  <div className="service-icon-wrapper">
+                    {service.icon}
+                  </div>
+                  <h3>{service.title}</h3>
+                  <p>{service.description}</p>
+                </div>
+              ))
+            )}
           </div>
         </div>
       </section>
@@ -201,22 +236,32 @@ const About = () => {
           </div>
 
           <div className="team-grid-premium">
-            {team.map((member, index) => (
-              <div key={index} className="team-card-premium">
-                <div className="team-image">
-                  <img src={member.image} alt={member.name} />
-                  <div className="team-social-overlay">
-                    <a href="#"><FaLinkedin /></a>
-                    <a href="#"><FaTwitter /></a>
-                    <a href="#"><FaInstagram /></a>
+            {teamMembers.length > 0 ? (
+              teamMembers.map((member) => (
+                <div key={member._id} className="team-card-premium">
+                  <div className="team-image">
+                    <img src={member.image} alt={member.name} />
+                    <div className="team-social-overlay">
+                      {member.linkedin && member.linkedin !== '#' && (
+                        <a href={member.linkedin} target="_blank" rel="noopener noreferrer" title="LinkedIn"><FaLinkedin /></a>
+                      )}
+                      {member.instagram && member.instagram !== '#' && (
+                        <a href={member.instagram} target="_blank" rel="noopener noreferrer" title="Instagram"><FaInstagram /></a>
+                      )}
+                      {member.mobilePhone && (
+                        <a href={`tel:${member.mobilePhone}`} title="Call"><FaPhone /></a>
+                      )}
+                    </div>
+                  </div>
+                  <div className="team-info">
+                    <h3>{member.name}</h3>
+                    <p>{member.role}</p>
                   </div>
                 </div>
-                <div className="team-info">
-                  <h3>{member.name}</h3>
-                  <p>{member.role}</p>
-                </div>
-              </div>
-            ))}
+              ))
+            ) : (
+              <div className="empty-state"><p>No team members found</p></div>
+            )}
           </div>
         </div>
       </section>
