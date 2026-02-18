@@ -10,9 +10,9 @@ import FormCard from './components/FormCard';
 import DragDropUpload from './components/DragDropUpload';
 import Toast from './components/Toast';
 import CategoryManager from './components/CategoryManager';
+import DeleteConfirmationModal from './components/DeleteConfirmationModal';
 
 const AdminDashboard = () => {
-    const { user } = useAuth();
     const [activeTab, setActiveTab] = useState('projects');
     const [loading, setLoading] = useState(true);
     const [submitLoading, setSubmitLoading] = useState(false);
@@ -65,6 +65,15 @@ const AdminDashboard = () => {
         order: 0
     });
     const [editingServiceId, setEditingServiceId] = useState(null);
+
+    // Delete Confirmation Modal State
+    const [deleteModal, setDeleteModal] = useState({
+        isOpen: false,
+        itemType: '', // 'testimonial', 'project', etc
+        itemId: '',
+        itemName: '',
+        isLoading: false
+    });
 
     const showToast = (message, type = 'success') => {
         setToast({ message, type });
@@ -298,7 +307,7 @@ const AdminDashboard = () => {
             const data = await response.json();
             if (!response.ok) throw new Error(data.message);
 
-            showToast('Testimonial approved successfully!', 'success');
+            showToast('Testimonial published successfully!', 'success');
             fetchTestimonials();
         } catch (error) {
             showToast(error.message, 'error');
@@ -316,28 +325,40 @@ const AdminDashboard = () => {
             const data = await response.json();
             if (!response.ok) throw new Error(data.message);
 
-            showToast('Testimonial removed from website', 'success');
+            showToast('Testimonial unpublished successfully!', 'success');
             fetchTestimonials();
         } catch (error) {
             showToast(error.message, 'error');
         }
     };
 
-    const handleTestimonialDelete = async (id) => {
-        if (!window.confirm('Are you sure you want to delete this testimonial permanently?')) return;
+    const handleTestimonialDelete = (id, name) => {
+        setDeleteModal({
+            isOpen: true,
+            itemType: 'testimonial',
+            itemId: id,
+            itemName: name,
+            isLoading: false
+        });
+    };
+
+    const confirmTestimonialDelete = async () => {
+        setDeleteModal(prev => ({ ...prev, isLoading: true }));
 
         try {
             const token = localStorage.getItem('token');
-            const response = await fetch(`http://localhost:5000/api/testimonials/${id}`, {
+            const response = await fetch(`http://localhost:5000/api/testimonials/${deleteModal.itemId}`, {
                 method: 'DELETE',
                 headers: { 'Authorization': `Bearer ${token}` }
             });
 
             if (!response.ok) throw new Error('Failed to delete');
             showToast('Testimonial deleted successfully!', 'success');
+            setDeleteModal({ isOpen: false, itemType: '', itemId: '', itemName: '', isLoading: false });
             fetchTestimonials();
         } catch (error) {
             showToast('Failed to delete testimonial', 'error');
+            setDeleteModal(prev => ({ ...prev, isLoading: false }));
         }
     };
 
@@ -692,7 +713,7 @@ const AdminDashboard = () => {
                                             ) : (
                                                 <button onClick={() => handleTestimonialDeny(testimonial._id)} className="btn-action-deny"><FaTimes /> Unpublish</button>
                                             )}
-                                            <button onClick={() => handleTestimonialDelete(testimonial._id)} className="btn-action-delete"><FaTrash /></button>
+                                            <button onClick={() => handleTestimonialDelete(testimonial._id, testimonial.name)} className="btn-action-delete"><FaTrash /></button>
                                         </div>
                                     </div>
                                 ))}
@@ -899,6 +920,17 @@ const AdminDashboard = () => {
 
             {/* Toast Notification */}
             {toast && <Toast type={toast.type} message={toast.message} onClose={hideToast} duration={4000} />}
+
+            {/* Delete Confirmation Modal */}
+            <DeleteConfirmationModal
+                isOpen={deleteModal.isOpen}
+                title="Delete Testimonial?"
+                message="Are you sure you want to permanently delete this testimonial? This action cannot be undone."
+                itemName={deleteModal.itemName}
+                isLoading={deleteModal.isLoading}
+                onConfirm={confirmTestimonialDelete}
+                onCancel={() => setDeleteModal({ isOpen: false, itemType: '', itemId: '', itemName: '', isLoading: false })}
+            />
         </div>
     );
 };
