@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import {
   FaCouch, FaBuilding, FaBed, FaDraftingCompass, FaChair, FaHandshake,
   FaTrophy, FaSmile, FaStopwatch, FaCheckCircle, FaQuoteLeft,
-  FaLinkedin, FaInstagram, FaPhone, FaEye, FaBullseye, FaArrowRight
+  FaLinkedin, FaInstagram, FaPhone, FaEye, FaBullseye
 } from 'react-icons/fa';
 import './About.css';
 
@@ -77,9 +77,9 @@ const About = () => {
   ];
 
   const stats = [
-    { number: '15+', label: 'Design Awards', icon: <FaTrophy /> },
+    { number: '10+', label: 'Design Awards', icon: <FaTrophy /> },
     { number: '250+', label: 'Happy Clients', icon: <FaSmile /> },
-    { number: '4500+', label: 'Hours of Craftsmanship', icon: <FaStopwatch /> },
+    { number: '400+', label: 'Hours of Craftsmanship', icon: <FaStopwatch /> },
     { number: '150+', label: 'Projects Completed', icon: <FaCheckCircle /> },
   ];
 

@@ -17,9 +17,13 @@ const testimonialSchema = new mongoose.Schema(
     },
     mobileNumber: {
       type: String,
-      required: [true, 'Please provide a mobile number'],
+      required: false,
+      default: '',
       validate: {
         validator: function (v) {
+          // If empty, it's valid (optional field)
+          if (!v || v.trim() === '') return true;
+          // If provided, must be 10 digits
           return /^\d{10}$/.test(v);
         },
         message: 'Please provide a valid 10-digit mobile number',

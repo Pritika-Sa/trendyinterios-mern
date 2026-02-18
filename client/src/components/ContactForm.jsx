@@ -1,13 +1,11 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { FaUser, FaEnvelope, FaTag, FaPhone, FaPen, FaMapMarkerAlt, FaLock, FaStar } from 'react-icons/fa';
+import { FaUser, FaEnvelope, FaTag, FaPhone, FaPen, FaMapMarkerAlt, FaStar } from 'react-icons/fa';
 import { useAuth } from '../context/AuthContext';
-import { useNavigate } from 'react-router-dom';
 import './ContactForm.css';
 
 const ContactForm = ({ formType = 'contact' }) => {
-  const { user, token } = useAuth();
-  const navigate = useNavigate();
+  const { user } = useAuth();
   const [formData, setFormData] = useState({
     name: user?.name || '',
     email: user?.email || '',
@@ -68,18 +66,9 @@ const ContactForm = ({ formType = 'contact' }) => {
           return;
         }
 
-        // 2. Validate Mobile Number
-        const cleanMobile = formData.mobileNumber.replace(/\D/g, '').slice(-10);
-        if (cleanMobile.length !== 10) {
-          setMessage('Please provide a valid 10-digit mobile number');
-          setLoading(false);
-          return;
-        }
-
         payload = {
           name: formData.name,
           postalAddress: formData.postalAddress,
-          mobileNumber: cleanMobile,
           testimonialText: formData.testimonialText,
           rating: Number(formData.rating)
         };
@@ -221,22 +210,24 @@ const ContactForm = ({ formType = 'contact' }) => {
         </>
       )}
 
-      <div className="form-group">
-        <label htmlFor="mobileNumber">Mobile Number</label>
-        <div className="input-with-icon">
-          <FaPhone className="input-icon" />
-          <input
-            type="tel"
-            id="mobileNumber"
-            name="mobileNumber"
-            value={formData.mobileNumber}
-            onChange={handleChange}
-            required
-            placeholder="10-digit mobile number"
-            pattern="\d{10}"
-          />
+      {formType === 'contact' && (
+        <div className="form-group">
+          <label htmlFor="mobileNumber">Mobile Number</label>
+          <div className="input-with-icon">
+            <FaPhone className="input-icon" />
+            <input
+              type="tel"
+              id="mobileNumber"
+              name="mobileNumber"
+              value={formData.mobileNumber}
+              onChange={handleChange}
+              required
+              placeholder="10-digit mobile number"
+              pattern="\d{10}"
+            />
+          </div>
         </div>
-      </div>
+      )}
 
       <div className="form-group">
         <label htmlFor="message">

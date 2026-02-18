@@ -11,67 +11,10 @@ import './HomeEnhancements.css';
 const Home = () => {
   const { user } = useAuth();
   const [projects, setProjects] = useState([]);
-  const [loadingProjects, setLoadingProjects] = useState(true);
   const [testimonials, setTestimonials] = useState([]);
   const [loadingTestimonials, setLoadingTestimonials] = useState(true);
   const [services, setServices] = useState([]);
   const [loadingServices, setLoadingServices] = useState(true);
-
-  useEffect(() => {
-    const fetchLatestProjects = async () => {
-      try {
-        const response = await fetch('http://localhost:5000/api/projects?limit=6');
-        const data = await response.json();
-        if (data.success && data.data.length > 0) {
-          setProjects(data.data);
-        } else {
-          // Fallback to static if no projects in DB
-          setProjects(staticProjects);
-        }
-      } catch (error) {
-        console.error('Error fetching projects:', error);
-        setProjects(staticProjects);
-      } finally {
-        setLoadingProjects(false);
-      }
-    };
-
-    const fetchApprovedTestimonials = async () => {
-      try {
-        const response = await fetch('http://localhost:5000/api/testimonials');
-        const data = await response.json();
-        if (data.success) {
-          setTestimonials(data.data);
-        }
-      } catch (error) {
-        console.error('Error fetching testimonials:', error);
-      } finally {
-        setLoadingTestimonials(false);
-      }
-    };
-
-    const fetchServices = async () => {
-      try {
-        const response = await fetch('http://localhost:5000/api/services');
-        const data = await response.json();
-        if (data.success && data.data.length > 0) {
-          setServices(data.data);
-        } else {
-          // Fallback to default services if no data in DB
-          setServices(defaultServices);
-        }
-      } catch (error) {
-        console.error('Error fetching services:', error);
-        setServices(defaultServices);
-      } finally {
-        setLoadingServices(false);
-      }
-    };
-
-    fetchLatestProjects();
-    fetchApprovedTestimonials();
-    fetchServices();
-  }, []);
 
   const heroSlides = [
     {
@@ -150,7 +93,59 @@ const Home = () => {
     },
   ];
 
+  useEffect(() => {
+    const fetchLatestProjects = async () => {
+      try {
+        const response = await fetch('http://localhost:5000/api/projects?limit=6');
+        const data = await response.json();
+        if (data.success && data.data.length > 0) {
+          setProjects(data.data);
+        } else {
+          // Fallback to static if no projects in DB
+          setProjects(staticProjects);
+        }
+      } catch (error) {
+        console.error('Error fetching projects:', error);
+        setProjects(staticProjects);
+      }
+    };
 
+    const fetchApprovedTestimonials = async () => {
+      try {
+        const response = await fetch('http://localhost:5000/api/testimonials');
+        const data = await response.json();
+        if (data.success) {
+          setTestimonials(data.data);
+        }
+      } catch (error) {
+        console.error('Error fetching testimonials:', error);
+      } finally {
+        setLoadingTestimonials(false);
+      }
+    };
+
+    const fetchServices = async () => {
+      try {
+        const response = await fetch('http://localhost:5000/api/services');
+        const data = await response.json();
+        if (data.success && data.data.length > 0) {
+          setServices(data.data);
+        } else {
+          // Fallback to default services if no data in DB
+          setServices(defaultServices);
+        }
+      } catch (error) {
+        console.error('Error fetching services:', error);
+        setServices(defaultServices);
+      } finally {
+        setLoadingServices(false);
+      }
+    };
+
+    fetchLatestProjects();
+    fetchApprovedTestimonials();
+    fetchServices();
+  }, []);
 
   const designProcess = [
     { step: 'Meet Designer', icon: <FaHandshake />, description: 'Initial consultation to understand your vision' },
@@ -161,72 +156,6 @@ const Home = () => {
     { step: 'Implementation', icon: <FaTools />, description: 'Expert execution by skilled craftsmen' },
     { step: 'Quality Check', icon: <FaCheckCircle />, description: 'Rigorous quality control at every stage' },
     { step: 'Site Handover', icon: <FaKey />, description: 'Final walkthrough and project completion' },
-  ];
-
-  const ourServices = [
-    {
-      title: 'Living Room',
-      description: 'Conceptualize, design and execute stunning living room interiors that become the heart of your home.',
-      icon: '🛋️',
-    },
-    {
-      title: 'Bedroom',
-      description: 'Create peaceful sanctuaries with modern bedroom designs featuring smart storage and elegant aesthetics.',
-      icon: '🛏️',
-    },
-    {
-      title: 'Kitchen',
-      description: 'Modular kitchen solutions with premium finishes, smart storage, and contemporary design elements.',
-      icon: '🍳',
-    },
-    {
-      title: 'Office',
-      description: 'Professional office interiors that boost productivity with ergonomic design and modern aesthetics.',
-      icon: '💼',
-    },
-    {
-      title: 'Wardrobe',
-      description: 'Custom wardrobe solutions with intelligent storage systems and luxurious finishes.',
-      icon: '👔',
-    },
-    {
-      title: 'TV Unit',
-      description: 'Elegant entertainment units with integrated storage and sophisticated paneling designs.',
-      icon: '📺',
-    },
-  ];
-
-  const news = [
-    {
-      title: 'Modern Kitchen Design Trends 2024',
-      date: '15 Dec 2024',
-      author: 'Design Team',
-      category: 'Kitchen',
-      comments: 12,
-      excerpt:
-        'Discover the latest trends in modular kitchen design. From smart storage solutions to premium finishes, explore what makes modern kitchens both beautiful and functional.',
-      image: 'https://images.unsplash.com/photo-1556911220-bff31c812dba?q=80&w=400&auto=format&fit=crop',
-    },
-    {
-      title: 'Luxury Living Room Ideas',
-      date: '10 Dec 2024',
-      author: 'Interior Experts',
-      category: 'Living Room',
-      comments: 8,
-      excerpt:
-        'Transform your living space into a luxurious retreat. Learn about color palettes, furniture selection, and design principles that create stunning living rooms.',
-      image: 'https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?q=80&w=400&auto=format&fit=crop',
-    },
-    {
-      title: 'Bedroom Design Essentials',
-      date: '05 Dec 2024',
-      author: 'TrendyInterios',
-      category: 'Bedroom',
-      comments: 15,
-      excerpt:
-        'Create the perfect bedroom sanctuary with our expert tips. From lighting to storage, discover the essential elements of sophisticated bedroom design.',
-      image: 'https://images.unsplash.com/photo-1616594039964-ae9021a400a0?q=80&w=400&auto=format&fit=crop',
-    },
   ];
 
   return (
@@ -262,7 +191,7 @@ const Home = () => {
             subtitle="Crafting exceptional spaces with passion and precision"
           />
           <div className="services-grid">
-            {services.map((service, index) => (
+            {defaultServices.map((service, index) => (
               <div key={index} className="service-card">
                 <div className="service-icon">{service.icon}</div>
                 <h3>{service.title}</h3>
@@ -431,15 +360,21 @@ const Home = () => {
             subtitle="Comprehensive interior design solutions for every space"
           />
           <div className="services-detail-grid">
-            {ourServices.map((service, index) => (
-              <div key={index} className="service-detail">
-                <div className="service-icon" style={{ fontSize: '2.5rem', marginBottom: '1rem' }}>
-                  {service.icon}
+            {loadingServices ? (
+              <p className="loading-text" style={{ textAlign: 'center', color: 'var(--color-gold)' }}>Loading services...</p>
+            ) : services.length === 0 ? (
+              <p className="empty-text" style={{ textAlign: 'center', color: 'var(--color-gold)', gridColumn: '1 / -1' }}>No services available</p>
+            ) : (
+              services.map((service, index) => (
+                <div key={service._id || index} className="service-detail">
+                  <div className="service-icon" style={{ fontSize: '2.5rem', marginBottom: '1rem' }}>
+                    {service.icon}
+                  </div>
+                  <h3>{service.title}</h3>
+                  <p>{service.description}</p>
                 </div>
-                <h3>{service.title}</h3>
-                <p>{service.description}</p>
-              </div>
-            ))}
+              ))
+            )}
           </div>
         </div>
       </section>
