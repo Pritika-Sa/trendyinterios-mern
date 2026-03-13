@@ -50,7 +50,6 @@ const sampleTestimonials = [
 
 const Testimonials = () => {
   const navigate = useNavigate();
-  const [testimonials, setTestimonials] = useState([]);
   const [displayTestimonials, setDisplayTestimonials] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -62,16 +61,13 @@ const Testimonials = () => {
         if (response.data.success && response.data.data && response.data.data.length > 0) {
           // Get latest 9 testimonials only
           const latest9 = response.data.data.slice(0, 9);
-          setTestimonials(latest9);
           setDisplayTestimonials(latest9);
         } else {
-          setTestimonials(sampleTestimonials);
           setDisplayTestimonials(sampleTestimonials);
         }
       } catch (error) {
         console.error('Error fetching testimonials:', error);
         // Fallback to samples on error
-        setTestimonials(sampleTestimonials);
         setDisplayTestimonials(sampleTestimonials);
       } finally {
         setLoading(false);

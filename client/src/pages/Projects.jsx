@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { FaMapMarkerAlt, FaCalendarAlt, FaRulerCombined, FaArrowRight, FaLongArrowAltRight } from 'react-icons/fa';
+import { FaMapMarkerAlt, FaLongArrowAltRight } from 'react-icons/fa';
+import ProjectSlideshow from '../components/ProjectSlideshow';
 import './Projects.css';
 
 const Projects = () => {
@@ -9,7 +10,8 @@ const Projects = () => {
   const [visibleProjects, setVisibleProjects] = useState([]);
   const [categories, setCategories] = useState([{ id: 'all', label: 'All Projects' }]);
   const [isAnimating, setIsAnimating] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const [selectedProject, setSelectedProject] = useState(null);
+  const [slideshowOpen, setSlideshowOpen] = useState(false);
 
   // Scroll to top on mount
   useEffect(() => {
@@ -68,12 +70,11 @@ const Projects = () => {
       } catch (error) {
         console.error('Error fetching projects:', error);
         setAllProjects(staticProjects);
-      } finally {
-        setLoading(false);
       }
     };
 
     fetchProjects();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Static fallback projects
@@ -152,6 +153,18 @@ const Projects = () => {
     return () => clearTimeout(timer);
   }, [activeCategory, allProjects]);
 
+  // Handle view project click
+  const handleViewProject = (project) => {
+    setSelectedProject(project);
+    setSlideshowOpen(true);
+  };
+
+  // Handle close slideshow
+  const handleCloseSlidshow = () => {
+    setSlideshowOpen(false);
+    setTimeout(() => setSelectedProject(null), 300);
+  };
+
   return (
     <div className="projects-page">
       {/* Hero Section */}
@@ -196,7 +209,7 @@ const Projects = () => {
                       <span className="project-badge">{project.category}</span>
                       <h3>{project.title}</h3>
                       <p className="project-app-desc">{project.description}</p>
-                      <button className="view-project-btn">
+                      <button className="view-project-btn" onClick={() => handleViewProject(project)}>
                         View Project <FaLongArrowAltRight />
                       </button>
                     </div>
@@ -234,6 +247,9 @@ const Projects = () => {
           </div>
         </div>
       </section>
+
+      {/* Floating Slideshow */}
+      <ProjectSlideshow isOpen={slideshowOpen} project={selectedProject} onClose={handleCloseSlidshow} />
     </div>
   );
 };

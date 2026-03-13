@@ -8,6 +8,7 @@ const Login = () => {
         email: '',
         password: ''
     });
+    const [showPassword, setShowPassword] = useState(false);
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
     const { login } = useAuth();
@@ -32,7 +33,6 @@ const Login = () => {
             const data = await response.json();
 
             if (!response.ok) {
-                // If data.error is an array, join it, otherwise use it directly
                 const errorMessage = Array.isArray(data.error) ? data.error.join(', ') : (data.error || 'Failed to login');
                 setError(errorMessage);
                 return;
@@ -40,7 +40,7 @@ const Login = () => {
 
             if (data.user.role === 'admin') {
                 login(data.user, data.token);
-                navigate('/admin/dashboard');
+                navigate('/admin');
             } else {
                 setError('Access Denied: Admin privileges required.');
                 return;
@@ -79,15 +79,26 @@ const Login = () => {
 
                     <div className="form-group">
                         <label htmlFor="password">Password</label>
-                        <input
-                            type="password"
-                            id="password"
-                            name="password"
-                            value={formData.password}
-                            onChange={handleChange}
-                            required
-                            placeholder="Enter password"
-                        />
+                        <div className="password-input-wrapper">
+                            <input
+                                type={showPassword ? 'text' : 'password'}
+                                id="password"
+                                name="password"
+                                value={formData.password}
+                                onChange={handleChange}
+                                required
+                                placeholder="Enter password"
+                            />
+                            <button
+                                type="button"
+                                className="password-toggle"
+                                onClick={() => setShowPassword(!showPassword)}
+                                title={showPassword ? 'Hide password' : 'Show password'}
+                                tabIndex="-1"
+                            >
+                                {showPassword ? '●' : '◯'}
+                            </button>
+                        </div>
                     </div>
 
                     <button type="submit" className="auth-btn" disabled={loading}>
@@ -96,6 +107,8 @@ const Login = () => {
                 </form>
 
                 <div className="auth-footer">
+                    <Link to="/forgot-password" className="auth-link">Forgot Password?</Link>
+                    <span style={{ color: '#666', margin: '0 5px' }}>|</span>
                     <Link to="/" className="auth-link">Back to Home</Link>
                 </div>
             </div>

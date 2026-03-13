@@ -145,6 +145,7 @@ const Home = () => {
     fetchLatestProjects();
     fetchApprovedTestimonials();
     fetchServices();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const designProcess = [

@@ -56,6 +56,11 @@ const ContactForm = ({ formType = 'contact' }) => {
           mobileNumber: cleanMobile,
           message: formData.message,
         };
+
+        const token = localStorage.getItem('token');
+        if (token) {
+          headers['Authorization'] = `Bearer ${token}`;
+        }
       } else if (formType === 'testimonial') {
         endpoint = '/api/testimonials';
 
@@ -72,6 +77,11 @@ const ContactForm = ({ formType = 'contact' }) => {
           testimonialText: formData.testimonialText,
           rating: Number(formData.rating)
         };
+
+        const token = localStorage.getItem('token');
+        if (token) {
+          headers['Authorization'] = `Bearer ${token}`;
+        }
       }
 
       await axios.post(`http://localhost:5000${endpoint}`, payload, { headers });

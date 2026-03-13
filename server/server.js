@@ -1,4 +1,4 @@
-require('dotenv').config();
+require('dotenv').config({ path: __dirname + '/.env' });
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
@@ -11,6 +11,8 @@ const expertiseRoutes = require('./routes/expertise');
 const teamMemberRoutes = require('./routes/teamMembers');
 const serviceRoutes = require('./routes/services');
 const categoryRoutes = require('./routes/categories');
+const designRoutes = require('./routes/designs');
+const quotationRoutes = require('./routes/quotations');
 const errorHandler = require('./middleware/errorHandler');
 
 const http = require('http');
@@ -49,6 +51,8 @@ app.use('/api/expertise', expertiseRoutes);
 app.use('/api/team-members', teamMemberRoutes);
 app.use('/api/services', serviceRoutes);
 app.use('/api/categories', categoryRoutes);
+app.use('/api/designs', designRoutes);
+app.use('/api/quotations', quotationRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {
@@ -79,6 +83,26 @@ io.on('connection', (socket) => {
   });
 });
 
+// Set SO_REUSEADDR to allow immediate port reuse after shutdown
+server.setsockopt = function(level, optname, value) {
+  if (this._handle !== null) {
+    this._handle.setsockopt(level, optname, value);
+  }
+};
+
 server.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
+});
+
+// Handle port already in use error
+server.on('error', (err) => {
+  if (err.code === 'EADDRINUSE') {
+    console.error(`Port ${PORT} is already in use. Retrying in 3 seconds...`);
+    setTimeout(() => {
+      server.close();
+      server.listen(PORT);
+    }, 3000);
+  } else {
+    throw err;
+  }
 });

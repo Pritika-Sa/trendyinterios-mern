@@ -1,7 +1,8 @@
 const express = require('express');
 const Testimonial = require('../models/Testimonial');
 const { protect, authorize } = require('../middleware/authMiddleware');
-const sendAdminEmail = require('../utils/mail');
+const { sendAdminEmail } = require('../utils/mail');
+const { generateTestimonialEmailHTML } = require('../utils/emailTemplates');
 const router = express.Router();
 
 // Create testimonial (Public - no login required)
@@ -20,12 +21,14 @@ router.post('/', async (req, res) => {
 
     await testimonial.save();
 
-    // email admin
+    // send admin email with professional HTML template
     sendAdminEmail({
       to: process.env.ADMIN_EMAIL,
-      subject: `New testimonial from ${name || 'Guest'}`,
-      text: `${testimonialText}\n\nFrom: ${name || 'Guest'}\nMobile: ${mobileNumber}`,
-    }).catch(() => { });
+      subject: `⭐ New Testimonial from ${name || 'Guest'} - ${rating} Star Rating`,
+      html: generateTestimonialEmailHTML({ name, testimonialText, rating, mobileNumber, postalAddress }),
+    }).catch((err) => {
+      console.error('[TESTIMONIALS] Failed to send admin email:', err.message);
+    });
 
     // notify admin UI
     req.app.get('io')?.emit('admin:newTestimonial', { id: testimonial._id, name: testimonial.name, createdAt: testimonial.createdAt });

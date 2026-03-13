@@ -14,6 +14,10 @@ const projectSchema = new mongoose.Schema({
         type: String, // Storing image URL (can be base64 or external URL)
         required: [true, 'Please add an image']
     },
+    images: {
+        type: [String], // Gallery images for slideshow
+        default: [],
+    },
     category: {
         type: String,
         required: [true, 'Please select a category'],

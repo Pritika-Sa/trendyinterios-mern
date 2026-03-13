@@ -354,43 +354,6 @@
   }
 }
 
-/* Floating Buttons */
-.floating-buttons {
-  position: fixed;
-  bottom: 30px;
-  right: 30px;
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-  z-index: 9999;
-}
-
-.floating-btn {
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  font-size: 1.4rem;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-  transition: transform 0.3s;
-  border: 2px solid rgba(255, 255, 255, 0.2);
-}
-
-.floating-btn:hover {
-  transform: scale(1.1);
-}
-
-.whatsapp-btn {
-  background: #25D366;
-}
-
-.call-btn {
-  background: #2c3e50;
-}
-
 /* Responsive */
 @media (max-width: 1024px) {
   .footer-container {
@@ -465,4 +428,37 @@
     text-align: center;
     align-items: center;
   }
+}
+
+/* ===== ADMIN LOGIN SECTION ===== */
+.admin-use-only-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background: linear-gradient(135deg, rgba(212, 175, 55, 0.15), rgba(212, 175, 55, 0.08));
+  border: 1px solid rgba(212, 175, 55, 0.4);
+  color: #d4af37;
+  text-decoration: none;
+  border-radius: 50px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  text-transform: uppercase;
+  margin-top: 1.5rem;
+  display: inline-flex;
+}
+
+.admin-use-only-link:hover {
+  background: linear-gradient(135deg, rgba(212, 175, 55, 0.25), rgba(212, 175, 55, 0.15));
+  border-color: #d4af37;
+  box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+  transform: translateY(-2px);
+  color: #f1c40f;
+}
+
+.admin-use-only-link:active {
+  transform: translateY(0);
 }

@@ -1,15 +1,14 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { useAuth } from '../../context/AuthContext';
 import {
     FaTrash, FaPlus, FaEdit, FaTimes, FaCheck,
-    FaProjectDiagram, FaComments, FaLightbulb, FaUsers, FaCog
+    FaProjectDiagram, FaComments, FaUsers, FaCog, FaPhone, FaWhatsapp, FaPalette
 } from 'react-icons/fa';
 import './AdminDashboard.css';
 import AdminNavigation from './components/AdminNavigation';
 import FormCard from './components/FormCard';
 import DragDropUpload from './components/DragDropUpload';
+import MultiImageUpload from './components/MultiImageUpload';
 import Toast from './components/Toast';
-import CategoryManager from './components/CategoryManager';
 import DeleteConfirmationModal from './components/DeleteConfirmationModal';
 
 const AdminDashboard = () => {
@@ -20,27 +19,20 @@ const AdminDashboard = () => {
 
     // Projects State
     const [projects, setProjects] = useState([]);
-    const [projectCategories, setProjectCategories] = useState(['residential', 'commercial', 'art-craft']);
     const [projectForm, setProjectForm] = useState({
         title: '',
         description: '',
         category: '',
-        image: ''
+        image: '',
+        images: []
     });
     const [editingProjectId, setEditingProjectId] = useState(null);
 
     // Testimonials State
     const [testimonials, setTestimonials] = useState([]);
 
-    // Expertise State
-    const [expertise, setExpertise] = useState([]);
-    const [expertiseForm, setExpertiseForm] = useState({
-        title: '',
-        description: '',
-        icon: '',
-        order: 0
-    });
-    const [editingExpertiseId, setEditingExpertiseId] = useState(null);
+    // Contacts State
+    const [contacts, setContacts] = useState([]);
 
     // Team Members State
     const [teamMembers, setTeamMembers] = useState([]);
@@ -51,7 +43,7 @@ const AdminDashboard = () => {
         mobilePhone: '',
         linkedin: '',
         instagram: '',
-        twitter: '#',
+        twitter: '',
         order: 0
     });
     const [editingTeamId, setEditingTeamId] = useState(null);
@@ -65,6 +57,16 @@ const AdminDashboard = () => {
         order: 0
     });
     const [editingServiceId, setEditingServiceId] = useState(null);
+
+    // Designs State
+    const [designs, setDesigns] = useState([]);
+    const [designForm, setDesignForm] = useState({
+        title: '',
+        imageUrl: '',
+        description: '',
+        order: 0
+    });
+    const [editingDesignId, setEditingDesignId] = useState(null);
 
     // Delete Confirmation Modal State
     const [deleteModal, setDeleteModal] = useState({
@@ -107,13 +109,16 @@ const AdminDashboard = () => {
         }
     };
 
-    const fetchExpertise = async () => {
+    const fetchContacts = async () => {
         try {
-            const response = await fetch('http://localhost:5000/api/expertise');
+            const token = localStorage.getItem('token');
+            const response = await fetch('http://localhost:5000/api/contacts', {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
             const data = await response.json();
-            if (data.success) setExpertise(data.data);
+            if (data.success) setContacts(data.data);
         } catch (error) {
-            console.error('Error fetching expertise:', error);
+            console.error('Error fetching contacts:', error);
         }
     };
 
@@ -137,20 +142,13 @@ const AdminDashboard = () => {
         }
     };
 
-    const fetchCategories = async () => {
+    const fetchDesigns = async () => {
         try {
-            const token = localStorage.getItem('token');
-            const response = await fetch('http://localhost:5000/api/categories/admin/all', {
-                headers: { 'Authorization': `Bearer ${token}` }
-            });
+            const response = await fetch('http://localhost:5000/api/designs');
             const data = await response.json();
-            if (data.success) {
-                // Extract category names for the display
-                const categoryNames = data.data.map(cat => cat.name);
-                setProjectCategories(categoryNames);
-            }
+            if (data.success) setDesigns(data.data);
         } catch (error) {
-            console.error('Error fetching categories:', error);
+            console.error('Error fetching designs:', error);
         }
     };
 
@@ -159,10 +157,10 @@ const AdminDashboard = () => {
         await Promise.all([
             fetchProjects(),
             fetchTestimonials(),
-            fetchExpertise(),
+            fetchContacts(),
             fetchTeamMembers(),
             fetchServices(),
-            fetchCategories()
+            fetchDesigns()
         ]);
         setLoading(false);
     }, []);
@@ -197,7 +195,7 @@ const AdminDashboard = () => {
             if (!response.ok) throw new Error(data.error || 'Failed to save project');
 
             showToast(editingProjectId ? 'Project updated successfully!' : 'Project published successfully!', 'success');
-            setProjectForm({ title: '', description: '', category: '', image: '' });
+            setProjectForm({ title: '', description: '', category: '', image: '', images: [] });
             setEditingProjectId(null);
             fetchProjects();
         } catch (error) {
@@ -207,70 +205,15 @@ const AdminDashboard = () => {
         }
     };
 
-    const handleAddCategory = async (newCategory) => {
-        if (!projectCategories.includes(newCategory)) {
-            try {
-                const token = localStorage.getItem('token');
-                const response = await fetch('http://localhost:5000/api/categories', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`
-                    },
-                    body: JSON.stringify({
-                        name: newCategory.toLowerCase(),
-                        displayName: newCategory.charAt(0).toUpperCase() + newCategory.slice(1).replace(/-/g, ' ')
-                    })
-                });
 
-                const data = await response.json();
-                if (!response.ok) throw new Error(data.message || 'Failed to add category');
-
-                setProjectCategories([...projectCategories, newCategory.toLowerCase()]);
-                showToast('Category added successfully!', 'success');
-            } catch (error) {
-                showToast(error.message, 'error');
-            }
-        } else {
-            showToast('This category already exists', 'error');
-        }
-    };
-
-    const handleRemoveCategory = async (category) => {
-        try {
-            const token = localStorage.getItem('token');
-            // Find the category ID first
-            const allCategoriesResponse = await fetch('http://localhost:5000/api/categories/admin/all', {
-                headers: { 'Authorization': `Bearer ${token}` }
-            });
-            const allCategoriesData = await allCategoriesResponse.json();
-            const categoryToDelete = allCategoriesData.data.find(cat => cat.name === category);
-
-            if (categoryToDelete) {
-                const response = await fetch(`http://localhost:5000/api/categories/${categoryToDelete._id}`, {
-                    method: 'DELETE',
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
-
-                if (!response.ok) throw new Error('Failed to delete category');
-
-                setProjectCategories(projectCategories.filter(c => c !== category));
-                if (projectForm.category === category) {
-                    setProjectForm({ ...projectForm, category: '' });
-                }
-                showToast('Category removed successfully!', 'success');
-            }
-        } catch (error) {
-            showToast(error.message, 'error');
-        }
-    };
 
     const handleProjectEdit = (project) => {
         setProjectForm({
             title: project.title,
             description: project.description,
             category: project.category,
-            image: project.image
+            image: project.image,
+            images: project.images || []
         });
         setEditingProjectId(project._id);
         window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -362,71 +305,6 @@ const AdminDashboard = () => {
         }
     };
 
-    // ============ EXPERTISE FUNCTIONS ============
-
-    const handleExpertiseSubmit = async (e) => {
-        e.preventDefault();
-        setSubmitLoading(true);
-
-        try {
-            const token = localStorage.getItem('token');
-            const url = editingExpertiseId
-                ? `http://localhost:5000/api/expertise/${editingExpertiseId}`
-                : 'http://localhost:5000/api/expertise';
-            const method = editingExpertiseId ? 'PUT' : 'POST';
-
-            const response = await fetch(url, {
-                method,
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                },
-                body: JSON.stringify(expertiseForm)
-            });
-
-            const data = await response.json();
-            if (!response.ok) throw new Error(data.message || 'Failed to save expertise');
-
-            showToast(editingExpertiseId ? 'Expertise updated!' : 'Expertise added!', 'success');
-            setExpertiseForm({ title: '', description: '', icon: '', order: 0 });
-            setEditingExpertiseId(null);
-            fetchExpertise();
-        } catch (error) {
-            showToast(error.message, 'error');
-        } finally {
-            setSubmitLoading(false);
-        }
-    };
-
-    const handleExpertiseEdit = (item) => {
-        setExpertiseForm({
-            title: item.title,
-            description: item.description,
-            icon: item.icon,
-            order: item.order
-        });
-        setEditingExpertiseId(item._id);
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    };
-
-    const handleExpertiseDelete = async (id) => {
-        if (!window.confirm('Are you sure you want to delete this expertise item?')) return;
-
-        try {
-            const token = localStorage.getItem('token');
-            const response = await fetch(`http://localhost:5000/api/expertise/${id}`, {
-                method: 'DELETE',
-                headers: { 'Authorization': `Bearer ${token}` }
-            });
-
-            if (!response.ok) throw new Error('Failed to delete');
-            showToast('Expertise deleted successfully!', 'success');
-            fetchExpertise();
-        } catch (error) {
-            showToast('Failed to delete expertise', 'error');
-        }
-    };
-
     // ============ TEAM MEMBERS FUNCTIONS ============
 
     const handleTeamSubmit = async (e) => {
@@ -453,7 +331,7 @@ const AdminDashboard = () => {
             if (!response.ok) throw new Error(data.message || 'Failed to save team member');
 
             showToast(editingTeamId ? 'Team member updated!' : 'Team member added!', 'success');
-            setTeamForm({ name: '', role: '', image: '', mobilePhone: '', linkedin: '', instagram: '', twitter: '#', order: 0 });
+            setTeamForm({ name: '', role: '', image: '', mobilePhone: '', linkedin: '', instagram: '', twitter: '', order: 0 });
             setEditingTeamId(null);
             fetchTeamMembers();
         } catch (error) {
@@ -561,15 +439,132 @@ const AdminDashboard = () => {
         }
     };
 
+    // ============ DESIGNS FUNCTIONS ============
+
+    const handleDesignSubmit = async (e) => {
+        e.preventDefault();
+        setSubmitLoading(true);
+
+        try {
+            const token = localStorage.getItem('token');
+            const url = editingDesignId
+                ? `http://localhost:5000/api/designs/${editingDesignId}`
+                : 'http://localhost:5000/api/designs';
+            const method = editingDesignId ? 'PUT' : 'POST';
+
+            const response = await fetch(url, {
+                method,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify(designForm)
+            });
+
+            const data = await response.json();
+            if (!response.ok) throw new Error(data.message || 'Failed to save design');
+
+            showToast(editingDesignId ? 'Design updated!' : 'Design added!', 'success');
+            setDesignForm({ title: '', imageUrl: '', description: '', order: 0 });
+            setEditingDesignId(null);
+            fetchDesigns();
+        } catch (error) {
+            showToast(error.message, 'error');
+        } finally {
+            setSubmitLoading(false);
+        }
+    };
+
+    const handleDesignEdit = (design) => {
+        setDesignForm({
+            title: design.title,
+            imageUrl: design.imageUrl,
+            description: design.description,
+            order: design.order
+        });
+        setEditingDesignId(design._id);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+    const handleDesignDelete = async (id) => {
+        if (!window.confirm('Are you sure you want to delete this design?')) return;
+
+        try {
+            const token = localStorage.getItem('token');
+            const response = await fetch(`http://localhost:5000/api/designs/${id}`, {
+                method: 'DELETE',
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+
+            if (!response.ok) throw new Error('Failed to delete');
+            showToast('Design deleted successfully!', 'success');
+            fetchDesigns();
+        } catch (error) {
+            showToast('Failed to delete design', 'error');
+        }
+    };
+
     const cancelEdit = () => {
-        setProjectForm({ title: '', description: '', category: '', image: '' });
-        setExpertiseForm({ title: '', description: '', icon: '', order: 0 });
-        setTeamForm({ name: '', role: '', image: '', mobilePhone: '', linkedin: '', instagram: '', twitter: '#', order: 0 });
+        setProjectForm({ title: '', description: '', category: '', image: '', images: [] });
+        setTeamForm({ name: '', role: '', image: '', mobilePhone: '', linkedin: '', instagram: '', twitter: '', order: 0 });
         setServiceForm({ title: '', description: '', icon: '', order: 0 });
+        setDesignForm({ title: '', imageUrl: '', description: '', order: 0 });
         setEditingProjectId(null);
-        setEditingExpertiseId(null);
         setEditingTeamId(null);
         setEditingServiceId(null);
+        setEditingDesignId(null);
+    };
+
+    // ============ CONTACTS FUNCTIONS ============
+
+const DEFAULT_WHATSAPP_MESSAGE = `Hello!
+
+Thank you for contacting Trendy Interiors.
+
+We have received your message and truly appreciate your interest in our interior design services. Our team will review your requirements and get back to you shortly.
+
+If you have any additional details about your project, please feel free to share them with us.
+
+We look forward to transforming your space!`;
+    const handleWhatsAppReply = async (contact) => {
+        // Mark as read
+        try {
+            const token = localStorage.getItem('token');
+            await fetch(`http://localhost:5000/api/contacts/${contact._id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({ status: 'replied' })
+            });
+        } catch (error) {
+            console.error('Error updating contact status:', error);
+        }
+
+        // Open WhatsApp with pre-filled message
+        const phoneNumber = contact.mobileNumber.replace(/\D/g, '').slice(-10);
+        const encodedMessage = encodeURIComponent(DEFAULT_WHATSAPP_MESSAGE);
+        const whatsappUrl = `https://wa.me/91${phoneNumber}?text=${encodedMessage}`;
+        window.open(whatsappUrl, '_blank');
+    };
+
+    const handleContactDelete = async (id) => {
+        if (!window.confirm('Are you sure you want to delete this contact?')) return;
+
+        try {
+            const token = localStorage.getItem('token');
+            const response = await fetch(`http://localhost:5000/api/contacts/${id}`, {
+                method: 'DELETE',
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+
+            if (!response.ok) throw new Error('Failed to delete');
+            showToast('Contact deleted successfully!', 'success');
+            fetchContacts();
+        } catch (error) {
+            showToast('Failed to delete contact', 'error');
+        }
     };
 
     return (
@@ -615,14 +610,18 @@ const AdminDashboard = () => {
                                     </div>
 
                                     <div className="form-subsection">
-                                        <h4 className="subsection-title">Category</h4>
-                                        <CategoryManager
-                                            categories={projectCategories}
-                                            selectedCategory={projectForm.category}
-                                            onSelectCategory={(cat) => setProjectForm({ ...projectForm, category: cat })}
-                                            onAddCategory={handleAddCategory}
-                                            onRemoveCategory={handleRemoveCategory}
-                                        />
+                                        <h4 className="subsection-title">Category <span className="required">*</span></h4>
+                                        <select
+                                            value={projectForm.category}
+                                            onChange={(e) => setProjectForm({ ...projectForm, category: e.target.value })}
+                                            required
+                                            className="form-input"
+                                        >
+                                            <option value="">-- Select a category --</option>
+                                            <option value="residential">Residential</option>
+                                            <option value="commercial">Commercial</option>
+                                            <option value="art-craft">Art & Craft</option>
+                                        </select>
                                     </div>
 
                                     <div className="form-subsection">
@@ -631,6 +630,16 @@ const AdminDashboard = () => {
                                             imageUrl={projectForm.image}
                                             onImageUrlChange={(url) => setProjectForm({ ...projectForm, image: url })}
                                             label="Project Image"
+                                        />
+                                    </div>
+
+                                    <div className="form-subsection">
+                                        <h4 className="subsection-title">Project Gallery Images (Optional)</h4>
+                                        <p className="subsection-description">Add up to 5 additional images for the project slideshow</p>
+                                        <MultiImageUpload
+                                            images={projectForm.images}
+                                            onImagesChange={(images) => setProjectForm({ ...projectForm, images })}
+                                            maxImages={5}
                                         />
                                     </div>
 
@@ -722,64 +731,6 @@ const AdminDashboard = () => {
                     </div>
                 )}
 
-                {/* EXPERTISE TAB */}
-                {activeTab === 'expertise' && (
-                    <div className="admin-section-wrapper">
-                        <div className="form-section">
-                            <FormCard title={editingExpertiseId ? 'Update Expertise' : 'Add New Expertise'} icon={editingExpertiseId ? <FaEdit /> : <FaPlus />}>
-                                <form onSubmit={handleExpertiseSubmit} className="admin-form">
-                                    <div className="form-group">
-                                        <label htmlFor="expertise-title">Title <span className="required">*</span></label>
-                                        <input id="expertise-title" type="text" value={expertiseForm.title} onChange={(e) => setExpertiseForm({ ...expertiseForm, title: e.target.value })} required placeholder="e.g. Kitchen Design" className="form-input" />
-                                    </div>
-                                    <div className="form-group">
-                                        <label htmlFor="expertise-description">Description <span className="required">*</span></label>
-                                        <textarea id="expertise-description" value={expertiseForm.description} onChange={(e) => setExpertiseForm({ ...expertiseForm, description: e.target.value })} required rows="4" placeholder="Describe this expertise..." className="form-textarea"></textarea>
-                                    </div>
-                                    <div className="form-group">
-                                        <label htmlFor="expertise-icon">Icon / Emoji <span className="required">*</span></label>
-                                        <input id="expertise-icon" type="text" value={expertiseForm.icon} onChange={(e) => setExpertiseForm({ ...expertiseForm, icon: e.target.value })} required placeholder="e.g. 🍳 or FaUtensils" className="form-input" />
-                                    </div>
-                                    <div className="form-group">
-                                        <label htmlFor="expertise-order">Display Order</label>
-                                        <input id="expertise-order" type="number" value={expertiseForm.order} onChange={(e) => setExpertiseForm({ ...expertiseForm, order: parseInt(e.target.value) })} placeholder="0" className="form-input" />
-                                    </div>
-                                    <div className="form-actions-footer">
-                                        <button type="submit" disabled={submitLoading} className="btn-publish">{submitLoading ? 'Saving...' : (editingExpertiseId ? 'Update' : 'Add')}</button>
-                                        {editingExpertiseId && <button type="button" onClick={cancelEdit} className="btn-secondary"><FaTimes /> Cancel</button>}
-                                    </div>
-                                </form>
-                            </FormCard>
-                        </div>
-                        <div className="content-section">
-                            <div className="section-header">
-                                <h3 className="section-title">Expertise Items</h3>
-                                <span className="item-count">{expertise.length}</span>
-                            </div>
-                            {loading ? (
-                                <div className="loading-state"><div className="spinner"></div></div>
-                            ) : expertise.length === 0 ? (
-                                <div className="empty-state"><FaLightbulb className="empty-icon" /><p>No expertise items yet</p></div>
-                            ) : (
-                                <div className="content-grid">
-                                    {expertise.map((item) => (
-                                        <div key={item._id} className="content-card">
-                                            <div className="content-card-icon">{item.icon}</div>
-                                            <h4>{item.title}</h4>
-                                            <p>{item.description}</p>
-                                            <small className="order-label">Order: {item.order}</small>
-                                            <div className="content-card-actions">
-                                                <button onClick={() => handleExpertiseEdit(item)} className="btn-action-edit"><FaEdit /></button>
-                                                <button onClick={() => handleExpertiseDelete(item._id)} className="btn-action-delete"><FaTrash /></button>
-                                            </div>
-                                        </div>
-                                    ))}
-                                </div>
-                            )}
-                        </div>
-                    </div>
-                )}
-
                 {/* TEAM MEMBERS TAB */}
                 {activeTab === 'team' && (
                     <div className="admin-section-wrapper">
@@ -799,12 +750,12 @@ const AdminDashboard = () => {
                                         <DragDropUpload imageUrl={teamForm.image} onImageUrlChange={(url) => setTeamForm({ ...teamForm, image: url })} label="Profile Image" />
                                     </div>
                                     <div className="form-group">
-                                        <label htmlFor="team-linkedin">LinkedIn URL <span className="required">*</span></label>
-                                        <input id="team-linkedin" type="url" value={teamForm.linkedin} onChange={(e) => setTeamForm({ ...teamForm, linkedin: e.target.value })} required placeholder="https://linkedin.com/in/..." className="form-input" />
+                                        <label htmlFor="team-linkedin">LinkedIn URL</label>
+                                        <input id="team-linkedin" type="url" value={teamForm.linkedin} onChange={(e) => setTeamForm({ ...teamForm, linkedin: e.target.value })} placeholder="https://linkedin.com/in/..." className="form-input" />
                                     </div>
                                     <div className="form-group">
-                                        <label htmlFor="team-instagram">Instagram URL <span className="required">*</span></label>
-                                        <input id="team-instagram" type="url" value={teamForm.instagram} onChange={(e) => setTeamForm({ ...teamForm, instagram: e.target.value })} required placeholder="https://instagram.com/..." className="form-input" />
+                                        <label htmlFor="team-instagram">Instagram URL</label>
+                                        <input id="team-instagram" type="url" value={teamForm.instagram} onChange={(e) => setTeamForm({ ...teamForm, instagram: e.target.value })} placeholder="https://instagram.com/..." className="form-input" />
                                     </div>
                                     <div className="form-group">
                                         <label htmlFor="team-mobile">Mobile Phone <span className="required">*</span></label>
@@ -816,7 +767,7 @@ const AdminDashboard = () => {
                                     </div>
                                     <div className="form-group">
                                         <label htmlFor="team-order">Display Order</label>
-                                        <input id="team-order" type="number" value={teamForm.order} onChange={(e) => setTeamForm({ ...teamForm, order: parseInt(e.target.value) })} placeholder="0" className="form-input" />
+                                        <input id="team-order" type="number" value={teamForm.order} onChange={(e) => setTeamForm({ ...teamForm, order: parseInt(e.target.value) || 0 })} placeholder="0" className="form-input" />
                                     </div>
                                     <div className="form-actions-footer">
                                         <button type="submit" disabled={submitLoading} className="btn-publish">{submitLoading ? 'Saving...' : (editingTeamId ? 'Update' : 'Add')}</button>
@@ -914,6 +865,133 @@ const AdminDashboard = () => {
                                 </div>
                             )}
                         </div>
+                    </div>
+                )}
+
+                {/* DESIGNS TAB */}
+                {activeTab === 'designs' && (
+                    <div className="admin-section-wrapper">
+                        <div className="form-section">
+                            <FormCard title={editingDesignId ? 'Update Design' : 'Add New Design'} icon={editingDesignId ? <FaEdit /> : <FaPlus />}>
+                                <form onSubmit={handleDesignSubmit} className="admin-form">
+                                    <div className="form-group">
+                                        <label htmlFor="design-title">Design Title <span className="required">*</span></label>
+                                        <input id="design-title" type="text" value={designForm.title} onChange={(e) => setDesignForm({ ...designForm, title: e.target.value })} required placeholder="e.g. Modern Living Room" className="form-input" />
+                                    </div>
+                                    <div className="form-group">
+                                        <label htmlFor="design-description">Description</label>
+                                        <textarea id="design-description" value={designForm.description} onChange={(e) => setDesignForm({ ...designForm, description: e.target.value })} rows="3" placeholder="Describe this design..." className="form-textarea"></textarea>
+                                    </div>
+                                    <div className="form-group">
+                                        <label>Design Image <span className="required">*</span></label>
+                                        <div className="image-upload-options">
+                                            <div className="upload-option">
+                                                <h4>Upload from System</h4>
+                                                <DragDropUpload imageUrl={designForm.imageUrl} onImageUrlChange={(url) => setDesignForm({ ...designForm, imageUrl: url })} label="Design Image" />
+                                            </div>
+                                            <div className="upload-divider">OR</div>
+                                            <div className="upload-option">
+                                                <h4>Use Image URL</h4>
+                                                <input type="url" value={designForm.imageUrl} onChange={(e) => setDesignForm({ ...designForm, imageUrl: e.target.value })} placeholder="https://example.com/image.jpg" className="form-input" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="form-group">
+                                        <label htmlFor="design-order">Display Order</label>
+                                        <input id="design-order" type="number" value={designForm.order} onChange={(e) => setDesignForm({ ...designForm, order: parseInt(e.target.value) })} placeholder="0" className="form-input" />
+                                    </div>
+                                    <div className="form-actions-footer">
+                                        <button type="submit" disabled={submitLoading} className="btn-publish">{submitLoading ? 'Saving...' : (editingDesignId ? 'Update' : 'Add')}</button>
+                                        {editingDesignId && <button type="button" onClick={cancelEdit} className="btn-secondary"><FaTimes /> Cancel</button>}
+                                    </div>
+                                </form>
+                            </FormCard>
+                        </div>
+                        <div className="content-section">
+                            <div className="section-header">
+                                <h3 className="section-title">Design Gallery</h3>
+                                <span className="item-count">{designs.length}</span>
+                            </div>
+                            {loading ? (
+                                <div className="loading-state"><div className="spinner"></div></div>
+                            ) : designs.length === 0 ? (
+                                <div className="empty-state"><FaPalette className="empty-icon" /><p>No designs yet</p></div>
+                            ) : (
+                                <div className="designs-grid">
+                                    {designs.map((design) => (
+                                        <div key={design._id} className="design-card">
+                                            <div className="design-image-container">
+                                                <img src={design.imageUrl} alt={design.title} />
+                                            </div>
+                                            <div className="design-info">
+                                                <h4>{design.title}</h4>
+                                                {design.description && <p className="design-desc">{design.description}</p>}
+                                                <small className="order-label">Order: {design.order}</small>
+                                            </div>
+                                            <div className="design-card-actions">
+                                                <button onClick={() => handleDesignEdit(design)} className="btn-action-edit"><FaEdit /></button>
+                                                <button onClick={() => handleDesignDelete(design._id)} className="btn-action-delete"><FaTrash /></button>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                )}
+
+                {/* CONTACTS / QUERIES TAB */}
+                {activeTab === 'contacts' && (
+                    <div className="content-section">
+                        <div className="section-header">
+                            <h3 className="section-title">Customer Queries & Messages</h3>
+                            <span className="item-count">{contacts.length}</span>
+                        </div>
+                        {loading ? (
+                            <div className="loading-state"><div className="spinner"></div><p>Loading...</p></div>
+                        ) : contacts.length === 0 ? (
+                            <div className="empty-state"><FaPhone className="empty-icon" /><p>No customer queries yet</p></div>
+                        ) : (
+                            <div className="contacts-grid">
+                                {contacts.map((contact) => (
+                                    <div key={contact._id} className={`contact-card ${contact.status}`}>
+                                        <div className="contact-card-header">
+                                            <div className="contact-info">
+                                                <h4 className="contact-name">{contact.name}</h4>
+                                                <p className="contact-email">{contact.email}</p>
+                                                <p className="contact-phone">
+                                                    <FaPhone style={{ marginRight: '8px' }} />
+                                                    {contact.mobileNumber}</p>
+                                                {contact.purpose && <p className="contact-purpose"><strong>Purpose:</strong> {contact.purpose}</p>}
+                                            </div>
+                                            <span className={`contact-status-badge ${contact.status}`}>{contact.status}</span>
+                                        </div>
+                                        <div className="contact-card-body">
+                                            <p className="contact-message">"{contact.message}"</p>
+                                            <small className="contact-date">
+                                                {new Date(contact.createdAt).toLocaleDateString()} at {new Date(contact.createdAt).toLocaleTimeString()}
+                                            </small>
+                                        </div>
+                                        <div className="contact-card-actions">
+                                            <button 
+                                                onClick={() => handleWhatsAppReply(contact)} 
+                                                className="btn-whatsapp"
+                                                title="Reply via WhatsApp"
+                                            >
+                                                <FaWhatsapp /> Reply via WhatsApp
+                                            </button>
+                                            <button 
+                                                onClick={() => handleContactDelete(contact._id)} 
+                                                className="btn-action-delete"
+                                                title="Delete this query"
+                                            >
+                                                <FaTrash />
+                                            </button>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
                     </div>
                 )}
             </div>
