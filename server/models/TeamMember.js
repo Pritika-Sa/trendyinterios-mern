@@ -21,12 +21,10 @@ const teamMemberSchema = new mongoose.Schema(
         },
         linkedin: {
             type: String,
-            required: [true, 'Please provide LinkedIn URL'],
             trim: true,
         },
         instagram: {
             type: String,
-            required: [true, 'Please provide Instagram URL'],
             trim: true,
         },
         mobilePhone: {
@@ -38,7 +36,7 @@ const teamMemberSchema = new mongoose.Schema(
         twitter: {
             type: String,
             trim: true,
-            default: '#',
+            default: '',
         },
         order: {
             type: Number,

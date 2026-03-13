@@ -6,9 +6,8 @@ import {
   FaPhoneAlt,
   FaWhatsapp,
   FaClock,
-  FaFacebookF,
-  FaInstagram,
-  FaLinkedinIn
+  FaYoutube,
+  FaStore
 } from 'react-icons/fa';
 import ContactForm from '../components/ContactForm';
 import './ReachUs.css';
@@ -81,7 +80,16 @@ const ReachUs = () => {
                     <div className="details">
                       <div className="detail-text">
                         <p><a href="tel:+919965299777">+91 99652 99777</a></p>
-                        <p><a href="tel:+919080398889">+91 90803 98889</a></p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* WHATSAPP */}
+                  <div className="contact-item">
+                    <div className="icon-box whatsapp-icon"><FaWhatsapp /></div>
+                    <div className="details">
+                      <div className="detail-text">
+                        <p><a href="https://wa.me/919080398889" target="_blank" rel="noopener noreferrer">+91 90803 98889</a></p>
                       </div>
                     </div>
                   </div>
@@ -102,8 +110,7 @@ const ReachUs = () => {
                     <div className="icon-box"><FaClock /></div>
                     <div className="details">
                       <div className="detail-text">
-                        <p>Mon - Sat: 09:00 AM - 07:00 PM</p>
-                        <p>Sunday: Closed</p>
+                        <p>09:00 AM - 07:00 PM</p>
                       </div>
                     </div>
                   </div>
@@ -114,14 +121,32 @@ const ReachUs = () => {
                 <div className="social-connect">
                   <h4>Follow Us</h4>
                   <div className="social-icons">
-                    <button className="social-link"><FaFacebookF /></button>
-                    <button className="social-link"><FaInstagram /></button>
-                    <button className="social-link"><FaLinkedinIn /></button>
                     <a
                       href="https://wa.me/919965299777"
+                      target="_blank"
+                      rel="noopener noreferrer"
                       className="social-link whatsapp"
+                      title="WhatsApp"
                     >
                       <FaWhatsapp />
+                    </a>
+                    <a
+                      href="https://www.youtube.com/@prabul7047"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="social-link youtube"
+                      title="YouTube"
+                    >
+                      <FaYoutube />
+                    </a>
+                    <a
+                      href="http://indiamart.com/trendy-interios/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="social-link indiamart"
+                      title="IndiaMART"
+                    >
+                      <FaStore />
                     </a>
                   </div>
                 </div>
@@ -129,6 +154,28 @@ const ReachUs = () => {
               </div>
             </div>
 
+          </div>
+        </div>
+      </section>
+
+      {/* Google Maps */}
+      <section className="reach-us-map">
+        <div className="map-content">
+          <div className="map-header">
+            <h2>Visit Our Studio</h2>
+            <p>Experience our designs in person. Located in the heart of Erode.</p>
+          </div>
+          <div className="map-container">
+            <iframe
+              title="TrendyInterios Location"
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3904.5617897384234!2d77.580962!3d11.4153444!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ba91545f4683209%3A0x8065716f2afd9e81!2sTRENDY%20INTERIOS!5e0!3m2!1sen!2sin!4v1678000000000"
+              width="100%"
+              height="500"
+              style={{ border: 0 }}
+              allowFullScreen=""
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+            ></iframe>
           </div>
         </div>
       </section>

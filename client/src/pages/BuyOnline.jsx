@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { FaShoppingCart, FaSearch, FaInfoCircle, FaCheckCircle, FaTruck, FaShieldAlt } from 'react-icons/fa';
+import { FaShoppingCart, FaSearch, FaCheckCircle, FaTruck, FaShieldAlt } from 'react-icons/fa';
 import './BuyOnline.css';
 
 const BuyOnline = () => {
@@ -107,6 +107,7 @@ const BuyOnline = () => {
       setLoading(false);
     }, 400);
     return () => clearTimeout(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeCategory]);
 
   return (

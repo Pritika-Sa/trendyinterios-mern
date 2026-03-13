@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-    FaProjectDiagram, FaComments, FaLightbulb, FaUsers, FaCog
+    FaProjectDiagram, FaComments, FaUsers, FaCog, FaPhone, FaPalette
 } from 'react-icons/fa';
 import './AdminNavigation.css';
 
@@ -8,7 +8,8 @@ const AdminNavigation = ({ activeTab, setActiveTab }) => {
     const tabs = [
         { id: 'projects', label: 'Projects', icon: FaProjectDiagram },
         { id: 'testimonials', label: 'Testimonials', icon: FaComments },
-        { id: 'expertise', label: 'Expertise', icon: FaLightbulb },
+        { id: 'contacts', label: 'Queries', icon: FaPhone },
+        { id: 'designs', label: 'Designs', icon: FaPalette },
         { id: 'team', label: 'Team', icon: FaUsers },
         { id: 'services', label: 'Services', icon: FaCog }
     ];

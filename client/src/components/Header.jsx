@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { FaBars, FaTimes, FaYoutube, FaHome, FaBuilding, FaPaintBrush, FaUtensils, FaCouch, FaSignOutAlt, FaCrown, FaCog, FaList } from 'react-icons/fa';
+import { FaBars, FaTimes, FaYoutube, FaHome, FaBuilding, FaPaintBrush, FaSignOutAlt, FaCrown, FaKey } from 'react-icons/fa';
 import { useAuth } from '../context/AuthContext';
+import ChangePasswordModal from './ChangePasswordModal';
 import './Header.css';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState(null);
+  const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
   const location = useLocation();
   const { user, logout } = useAuth();
 
@@ -146,7 +148,13 @@ const Header = () => {
                   <span>Admin</span>
                 </div>
                 <Link to="/admin" className="nav-link" onClick={closeMenu}>Dashboard</Link>
-                <Link to="/admin/projects" className="nav-link" onClick={closeMenu}>Manage Projects</Link>
+                <button 
+                  className="nav-link" 
+                  onClick={() => setIsPasswordModalOpen(true)}
+                  style={{ textAlign: 'left', background: 'none', border: 'none', color: '#fff', fontSize: '1.1rem' }}
+                >
+                  Change Password
+                </button>
                 <button className="nav-link" onClick={handleLogout} style={{ textAlign: 'left', background: 'none', border: 'none', color: '#fff', fontSize: '1.1rem' }}>
                   Logout
                 </button>
@@ -160,31 +168,6 @@ const Header = () => {
 
         {/* Right Side Actions */}
         <div className="header-actions">
-          {/* Buy Online Dropdown Button */}
-          <div
-            className={`dropdown buy-online-dropdown ${activeDropdown === 'buyOnline' ? 'open' : ''}`}
-            onMouseEnter={() => window.innerWidth > 992 && setActiveDropdown('buyOnline')}
-            onMouseLeave={() => window.innerWidth > 992 && setActiveDropdown(null)}
-          >
-            <button
-              className="btn-buy-online"
-              onClick={() => toggleDropdown('buyOnline')}
-            >
-              Buy Online
-              <span className="dropdown-arrow">▼</span>
-            </button>
-            <div className={`dropdown-menu ${activeDropdown === 'buyOnline' ? 'active' : ''}`}>
-              <Link to="/buy-online?category=kitchen" className="dropdown-item" onClick={closeMenu}>
-                <div className="menu-icon"><FaUtensils /></div>
-                <span>Kitchen</span>
-              </Link>
-              <Link to="/buy-online?category=accessories" className="dropdown-item" onClick={closeMenu}>
-                <div className="menu-icon"><FaCouch /></div>
-                <span>Accessories</span>
-              </Link>
-            </div>
-          </div>
-
           {/* YouTube Icon */}
           <a
             href="https://www.youtube.com/@TrendyInterioS-ql7rz"
@@ -222,21 +205,22 @@ const Header = () => {
                   <Link to="/admin" className="profile-dropdown-item" onClick={closeMenu}>
                     <FaCrown /> Dashboard
                   </Link>
-                  <Link to="/admin/projects" className="profile-dropdown-item" onClick={closeMenu}>
-                    <FaList /> Manage Projects
-                  </Link>
+                  <button 
+                    className="profile-dropdown-item" 
+                    onClick={() => {
+                      setIsPasswordModalOpen(true);
+                      setActiveDropdown(null);
+                    }}
+                  >
+                    <FaKey /> Change Password
+                  </button>
                   <div className="profile-dropdown-divider"></div>
                   <button className="profile-dropdown-item logout-item" onClick={handleLogout}>
                     <FaSignOutAlt /> Logout
                   </button>
                 </div>
               </div>
-            ) : (
-              /* Small Admin Link for non-logged in users */
-              <Link to="/login" className="admin-login-link" title="Admin Login">
-                <FaCog />
-              </Link>
-            )}
+            ) : null}
           </div>
         </div>
 
@@ -245,6 +229,16 @@ const Header = () => {
           {isMenuOpen ? <FaTimes /> : <FaBars />}
         </button>
       </div>
+
+      {/* Change Password Modal */}
+      <ChangePasswordModal 
+        isOpen={isPasswordModalOpen}
+        onClose={() => setIsPasswordModalOpen(false)}
+        onSuccess={() => {
+          setIsPasswordModalOpen(false);
+          setActiveDropdown(null);
+        }}
+      />
     </header>
   );
 };

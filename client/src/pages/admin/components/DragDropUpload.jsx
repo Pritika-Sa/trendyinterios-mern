@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
-import { FaCloudUploadAlt, FaImage, FaTimes } from 'react-icons/fa';
+import { FaCloudUploadAlt, FaTimes } from 'react-icons/fa';
 import './DragDropUpload.css';
 
 const DragDropUpload = ({ onImageUrlChange, imageUrl, label = 'Project Image' }) => {
     const [isDragging, setIsDragging] = useState(false);
-    const [useURL, setUseURL] = useState(true);
 
     const handleDragOver = (e) => {
         e.preventDefault();
@@ -29,7 +28,6 @@ const DragDropUpload = ({ onImageUrlChange, imageUrl, label = 'Project Image' })
             const reader = new FileReader();
             reader.onload = (event) => {
                 onImageUrlChange(event.target.result);
-                setUseURL(false);
             };
             reader.readAsDataURL(file);
         }
@@ -41,15 +39,17 @@ const DragDropUpload = ({ onImageUrlChange, imageUrl, label = 'Project Image' })
             const reader = new FileReader();
             reader.onload = (event) => {
                 onImageUrlChange(event.target.result);
-                setUseURL(false);
             };
             reader.readAsDataURL(file);
         }
     };
 
+    const handleClickUpload = () => {
+        document.getElementById('image-upload').click();
+    };
+
     const clearImage = () => {
         onImageUrlChange('');
-        setUseURL(true);
     };
 
     return (
@@ -85,6 +85,7 @@ const DragDropUpload = ({ onImageUrlChange, imageUrl, label = 'Project Image' })
                         onDragOver={handleDragOver}
                         onDragLeave={handleDragLeave}
                         onDrop={handleDrop}
+                        onClick={handleClickUpload}
                     >
                         <FaCloudUploadAlt className="upload-icon" />
                         <h4 className="upload-title">Drag & drop your image</h4>

@@ -1,20 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
-  FaCouch, FaBuilding, FaBed, FaDraftingCompass, FaChair, FaHandshake,
   FaTrophy, FaSmile, FaStopwatch, FaCheckCircle, FaQuoteLeft,
   FaLinkedin, FaInstagram, FaPhone, FaEye, FaBullseye
 } from 'react-icons/fa';
+import DesignCarousel from '../components/DesignCarousel';
 import './About.css';
 
 const About = () => {
   const [teamMembers, setTeamMembers] = useState([]);
-  const [expertiseData, setExpertiseData] = useState([]);
+  const [designs, setDesigns] = useState([]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
     fetchTeamMembers();
-    fetchExpertise();
+    fetchDesigns();
   }, []);
 
   const fetchTeamMembers = async () => {
@@ -30,51 +30,18 @@ const About = () => {
     }
   };
 
-  const fetchExpertise = async () => {
+  const fetchDesigns = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/expertise');
+      const response = await fetch('http://localhost:5000/api/designs');
       const data = await response.json();
       if (data.success) {
-        setExpertiseData(data.data);
+        setDesigns(data.data);
       }
     } catch (error) {
-      console.error('Error fetching expertise:', error);
-      setExpertiseData([]);
+      console.error('Error fetching designs:', error);
+      setDesigns([]);
     }
   };
-
-  const services = [
-    {
-      title: 'Living Room Design',
-      description: 'Conceptualizing and executing stunning living spaces that reflect your personality.',
-      icon: <FaCouch />,
-    },
-    {
-      title: 'Office Interiors',
-      description: 'Creating productive and ergonomic workspaces that inspire innovation.',
-      icon: <FaBuilding />,
-    },
-    {
-      title: 'Bedroom Sanctuaries',
-      description: 'Designing peaceful and luxurious retreats for ultimate relaxation.',
-      icon: <FaBed />,
-    },
-    {
-      title: 'Architectural Planning',
-      description: 'Comprehensive architectural solutions bringing classic structures to life.',
-      icon: <FaDraftingCompass />,
-    },
-    {
-      title: 'Commercial Spaces',
-      description: 'Designing waiting rooms and lobbies that leave a lasting first impression.',
-      icon: <FaChair />,
-    },
-    {
-      title: 'Custom Furniture',
-      description: 'Bespoke furniture pieces tailored to your specific style and space requirements.',
-      icon: <FaHandshake />,
-    },
-  ];
 
   const stats = [
     { number: '10+', label: 'Design Awards', icon: <FaTrophy /> },
@@ -176,39 +143,7 @@ const About = () => {
       </section>
 
       {/* Services Section */}
-      <section className="services-section">
-        <div className="container">
-          <div className="section-header-center">
-            <h4 className="section-label">WHAT WE DO</h4>
-            <h2>Our Expertise</h2>
-            <div className="divider-center"></div>
-          </div>
-
-          <div className="services-grid-premium">
-            {expertiseData.length > 0 ? (
-              expertiseData.map((expertise) => (
-                <div key={expertise._id} className="service-card-premium">
-                  <div className="service-icon-wrapper">
-                    {expertise.icon}
-                  </div>
-                  <h3>{expertise.title}</h3>
-                  <p>{expertise.description}</p>
-                </div>
-              ))
-            ) : (
-              services.map((service, index) => (
-                <div key={index} className="service-card-premium">
-                  <div className="service-icon-wrapper">
-                    {service.icon}
-                  </div>
-                  <h3>{service.title}</h3>
-                  <p>{service.description}</p>
-                </div>
-              ))
-            )}
-          </div>
-        </div>
-      </section>
+      <DesignCarousel designs={designs} />
 
       {/* Stats Section */}
       <section className="stats-section">

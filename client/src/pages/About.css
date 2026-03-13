@@ -295,79 +295,151 @@
 /* 5. SERVICES GRID - PREMIUM */
 .services-section {
   padding: 100px 0;
-  background: #fff;
+  background: #ffffff;
+  border-top: 1px solid rgba(212, 175, 55, 0.1);
+  border-bottom: 1px solid rgba(212, 175, 55, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+.services-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at 80% 50%, rgba(212, 175, 55, 0.04) 0%, transparent 50%);
+  pointer-events: none;
 }
 
 .section-header-center {
   text-align: center;
   margin-bottom: 60px;
+  position: relative;
+  z-index: 1;
+  animation: fadeInUp 0.8s ease-out;
+}
+
+.section-header-center .section-label {
+  color: #d4af37;
+  text-transform: uppercase;
+  font-weight: 700;
+  letter-spacing: 2px;
+  font-size: 0.85rem;
 }
 
 .section-header-center h2 {
   font-family: 'Playfair Display', serif;
-  font-size: 2.5rem;
+  font-size: 2.8rem;
   color: #1a1a1a;
-  margin-top: 10px;
+  margin-top: 15px;
+  letter-spacing: 1px;
+  text-shadow: none;
 }
 
 .divider-center {
   width: 60px;
   height: 3px;
-  background: #d4af37;
-  margin: 20px auto 0;
+  background: linear-gradient(90deg, transparent, #d4af37, transparent);
+  margin: 25px auto 0;
 }
 
 .services-grid-premium {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
   gap: 30px;
+  position: relative;
+  z-index: 1;
 }
 
 .service-card-premium {
-  background: #fff;
-  padding: 40px 30px;
-  border: 1px solid #eee;
-  border-radius: 8px;
-  transition: all 0.4s ease;
+  background: #ffffff;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  padding: 45px 35px;
+  border: 1px solid rgba(212, 175, 55, 0.2);
+  border-radius: 16px;
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
+  overflow: hidden;
+  min-height: 320px;
+  display: flex;
+  flex-direction: column;
+}
+
+.service-card-premium::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -50%;
+  width: 200px;
+  height: 200px;
+  background: radial-gradient(circle, rgba(212, 175, 55, 0.05) 0%, transparent 70%);
+  transition: all 0.5s ease;
 }
 
 .service-card-premium:hover {
   border-color: #d4af37;
-  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08);
-  transform: translateY(-8px);
+  box-shadow: 
+    0 20px 60px rgba(212, 175, 55, 0.2),
+    0 0 40px rgba(212, 175, 55, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  transform: translateY(-12px) scale(1.02);
+  background: #ffffff;
+}
+
+.service-card-premium:hover::before {
+  top: -20%;
+  right: -20%;
 }
 
 .service-icon-wrapper {
-  width: 70px;
-  height: 70px;
-  background: #f9f9f9;
+  width: 80px;
+  height: 80px;
+  background: linear-gradient(135deg, rgba(212, 175, 55, 0.15), rgba(212, 175, 55, 0.08));
+  border: 2px solid rgba(212, 175, 55, 0.3);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.8rem;
+  font-size: 2rem;
   color: #d4af37;
-  margin-bottom: 25px;
-  transition: all 0.4s ease;
+  margin-bottom: 30px;
+  transition: all 0.5s ease;
+  flex-shrink: 0;
 }
 
 .service-card-premium:hover .service-icon-wrapper {
-  background: #d4af37;
-  color: #fff;
+  background: linear-gradient(135deg, #d4af37 0%, #f1c40f 100%);
+  border-color: #d4af37;
+  color: #1a1a1a;
+  transform: scale(1.15) rotate(-5deg);
+  box-shadow: 0 10px 30px rgba(212, 175, 55, 0.4);
 }
 
 .service-card-premium h3 {
-  font-size: 1.4rem;
-  margin-bottom: 15px;
+  font-size: 1.5rem;
+  margin-bottom: 18px;
   color: #1a1a1a;
   font-family: 'Playfair Display', serif;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  transition: color 0.3s ease;
+}
+
+.service-card-premium:hover h3 {
+  color: #d4af37;
 }
 
 .service-card-premium p {
-  color: #666;
-  line-height: 1.6;
-  margin-bottom: 25px;
+  color: rgba(26, 26, 26, 0.8);
+  line-height: 1.8;
+  margin-bottom: 0;
+  flex-grow: 1;
+  font-size: 0.95rem;
+  letter-spacing: 0.3px;
+  transition: color 0.3s ease;
 }
 
 .service-link {
@@ -483,7 +555,7 @@
 .team-image img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
   transition: transform 0.5s ease;
 }
 
@@ -602,6 +674,18 @@
   from {
     opacity: 0;
     transform: translateY(-20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
   }
 
   to {

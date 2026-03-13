@@ -11,6 +11,8 @@ import GiveTestimonial from './pages/GiveTestimonial';
 import Projects from './pages/Projects';
 import BuyOnline from './pages/BuyOnline';
 import Login from './pages/Login';
+import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from './pages/ResetPassword';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminRoute from './components/AdminRoute';
 import './App.css';
@@ -18,7 +20,7 @@ import './App.css';
 const Layout = () => {
   const location = useLocation();
   // Hide footer on profile and auth pages
-  const showFooter = !['/login'].includes(location.pathname);
+  const showFooter = !['/login', '/forgot-password', '/reset-password'].some(path => location.pathname.startsWith(path));
 
   return (
     <div className="app-wrapper">
@@ -35,6 +37,8 @@ const Layout = () => {
 
           {/* Auth Routes - Admin Only Login */}
           <Route path="/login" element={<Login />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
 
           {/* Admin Routes - Protected */}
           <Route element={<AdminRoute />}>

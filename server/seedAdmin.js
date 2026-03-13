@@ -18,7 +18,7 @@ const seedAdmin = async () => {
         // wait for connection
         await new Promise(resolve => setTimeout(resolve, 2000));
 
-        const adminEmail = 'trendyadmin@gmail.com';
+        const adminEmail = 'trendyadmin123@gmail.com';
 
         // Check if admin exists
         const userExists = await User.findOne({ email: adminEmail });

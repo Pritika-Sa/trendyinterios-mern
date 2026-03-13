@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { FaInstagram, FaWhatsapp, FaPhone, FaEnvelope, FaClock, FaMapMarkerAlt } from 'react-icons/fa';
+import { FaWhatsapp, FaPhone, FaEnvelope, FaClock, FaMapMarkerAlt, FaLock, FaYoutube, FaStore } from 'react-icons/fa';
+import ChatBot from './ChatBot';
 import './Footer.css';
 
 const Footer = () => {
@@ -15,13 +16,19 @@ const Footer = () => {
             Premium interior design solutions that transform spaces into extraordinary living experiences.
           </p>
           <div className="footer-social">
-            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
-              <FaInstagram />
-            </a>
             <a href="https://wa.me/919965299777" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp">
               <FaWhatsapp />
             </a>
+            <a href="https://www.youtube.com/@prabul7047" target="_blank" rel="noopener noreferrer" aria-label="YouTube">
+              <FaYoutube />
+            </a>
+            <a href="http://indiamart.com/trendy-interios/" target="_blank" rel="noopener noreferrer" aria-label="IndiaMART">
+              <FaStore />
+            </a>
           </div>
+          <Link to="/login" className="admin-use-only-link" title="For Admin Use Only">
+            <FaLock /> For Admin Use Only
+          </Link>
         </div>
 
         {/* Quick Links */}
@@ -53,24 +60,12 @@ const Footer = () => {
         <div className="footer-section">
           <h3>Our Services</h3>
           <ul>
-            <li>
-              <a href="#interior-design">Living Room Design</a>
-            </li>
-            <li>
-              <a href="#modern-design">Modular Kitchen</a>
-            </li>
-            <li>
-              <a href="#planning-design">Bedroom Interiors</a>
-            </li>
-            <li>
-              <a href="#office-design">Office Design</a>
-            </li>
-            <li>
-              <a href="#wardrobe-design">Wardrobe Solutions</a>
-            </li>
-            <li>
-              <a href="#tv-unit">TV Unit & Paneling</a>
-            </li>
+            <li>Living Room Design</li>
+            <li>Modular Kitchen</li>
+            <li>Bedroom Interiors</li>
+            <li>Office Design</li>
+            <li>Wardrobe Solutions</li>
+            <li>TV Unit & Paneling</li>
           </ul>
         </div>
 
@@ -122,29 +117,11 @@ const Footer = () => {
           >
             Back to Top ↑
           </button>
-
-          <p>
-            Designed with <span className="heart">❤</span> by{' '}
-            <span className="developer-link">Genewtech</span>
-          </p>
         </div>
       </div>
 
-      {/* Floating Action Buttons */}
-      <div className="floating-buttons">
-        <a
-          href="https://wa.me/919965299777"
-          className="floating-btn whatsapp-btn"
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label="WhatsApp"
-        >
-          <FaWhatsapp />
-        </a>
-        <a href="tel:+919965299777" className="floating-btn call-btn" aria-label="Call">
-          <FaPhone />
-        </a>
-      </div>
+      {/* Chatbot */}
+      <ChatBot />
     </footer>
   );
 };
