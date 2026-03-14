@@ -1,31 +1,5 @@
 {
-  "name": "trendyinterios",
-  "version": "1.0.0",
-  "description": "Trendyinterios - MERN Stack Application",
-  "private": true,
-  "scripts": {
-    "install-all": "npm install && cd server && npm install && cd ../client && npm install",
-    "dev": "concurrently \"npm --prefix server run dev\" \"npm --prefix client start\"",
-    "start": "npm --prefix server start",
-    "build": "npm --prefix client run build",
-    "postinstall": "cd server && npm install && cd ../client && npm install"
-  },
   "dependencies": {
     "groq-sdk": "^1.1.1"
-  },
-  "devDependencies": {
-    "concurrently": "^8.2.0"
-  },
-  "keywords": [
-    "mern",
-    "react",
-    "express",
-    "mongodb",
-    "nodejs"
-  ],
-  "author": "",
-  "license": "ISC",
-  "engines": {
-    "node": ">=18.0.0"
   }
 }

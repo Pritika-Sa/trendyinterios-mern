@@ -5,6 +5,7 @@ import {
   FaLinkedin, FaInstagram, FaPhone, FaEye, FaBullseye
 } from 'react-icons/fa';
 import DesignCarousel from '../components/DesignCarousel';
+import { getApiUrl } from '../config/api';
 import './About.css';
 
 const About = () => {
@@ -19,7 +20,7 @@ const About = () => {
 
   const fetchTeamMembers = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/team-members');
+      const response = await fetch(getApiUrl('/team-members'));
       const data = await response.json();
       if (data.success) {
         setTeamMembers(data.data);
@@ -32,7 +33,7 @@ const About = () => {
 
   const fetchDesigns = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/designs');
+      const response = await fetch(getApiUrl('/designs'));
       const data = await response.json();
       if (data.success) {
         setDesigns(data.data);

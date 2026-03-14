@@ -3,6 +3,7 @@ import {
     FaTrash, FaPlus, FaEdit, FaTimes, FaCheck,
     FaProjectDiagram, FaComments, FaUsers, FaCog, FaPhone, FaWhatsapp, FaPalette
 } from 'react-icons/fa';
+import { getApiUrl } from '../../config/api';
 import './AdminDashboard.css';
 import AdminNavigation from './components/AdminNavigation';
 import FormCard from './components/FormCard';
@@ -88,7 +89,7 @@ const AdminDashboard = () => {
     // ============ FETCH ALL DATA ============
     const fetchProjects = async () => {
         try {
-            const response = await fetch('http://localhost:5000/api/projects');
+            const response = await fetch(getApiUrl('/projects'));
             const data = await response.json();
             if (data.success) setProjects(data.data);
         } catch (error) {
@@ -99,7 +100,7 @@ const AdminDashboard = () => {
     const fetchTestimonials = async () => {
         try {
             const token = localStorage.getItem('token');
-            const response = await fetch('http://localhost:5000/api/testimonials/admin/all', {
+            const response = await fetch(getApiUrl('/testimonials/admin/all'), {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             const data = await response.json();
@@ -112,7 +113,7 @@ const AdminDashboard = () => {
     const fetchContacts = async () => {
         try {
             const token = localStorage.getItem('token');
-            const response = await fetch('http://localhost:5000/api/contacts', {
+            const response = await fetch(getApiUrl('/contacts'), {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             const data = await response.json();
@@ -124,7 +125,7 @@ const AdminDashboard = () => {
 
     const fetchTeamMembers = async () => {
         try {
-            const response = await fetch('http://localhost:5000/api/team-members');
+            const response = await fetch(getApiUrl('/team-members'));
             const data = await response.json();
             if (data.success) setTeamMembers(data.data);
         } catch (error) {
@@ -134,7 +135,7 @@ const AdminDashboard = () => {
 
     const fetchServices = async () => {
         try {
-            const response = await fetch('http://localhost:5000/api/services');
+            const response = await fetch(getApiUrl('/services'));
             const data = await response.json();
             if (data.success) setServices(data.data);
         } catch (error) {
@@ -144,7 +145,7 @@ const AdminDashboard = () => {
 
     const fetchDesigns = async () => {
         try {
-            const response = await fetch('http://localhost:5000/api/designs');
+            const response = await fetch(getApiUrl('/designs'));
             const data = await response.json();
             if (data.success) setDesigns(data.data);
         } catch (error) {
@@ -178,8 +179,8 @@ const AdminDashboard = () => {
         try {
             const token = localStorage.getItem('token');
             const url = editingProjectId
-                ? `http://localhost:5000/api/projects/${editingProjectId}`
-                : 'http://localhost:5000/api/projects';
+                ? getApiUrl(`/projects/${editingProjectId}`)
+                : getApiUrl('/projects');
             const method = editingProjectId ? 'PUT' : 'POST';
 
             const response = await fetch(url, {
@@ -224,7 +225,7 @@ const AdminDashboard = () => {
 
         try {
             const token = localStorage.getItem('token');
-            const response = await fetch(`http://localhost:5000/api/projects/${id}`, {
+            const response = await fetch(getApiUrl(`/projects/${id}`), {
                 method: 'DELETE',
                 headers: { 'Authorization': `Bearer ${token}` }
             });
@@ -242,7 +243,7 @@ const AdminDashboard = () => {
     const handleTestimonialApprove = async (id) => {
         try {
             const token = localStorage.getItem('token');
-            const response = await fetch(`http://localhost:5000/api/testimonials/${id}/approve`, {
+            const response = await fetch(getApiUrl(`/testimonials/${id}/approve`), {
                 method: 'PATCH',
                 headers: { 'Authorization': `Bearer ${token}` }
             });
@@ -260,7 +261,7 @@ const AdminDashboard = () => {
     const handleTestimonialDeny = async (id) => {
         try {
             const token = localStorage.getItem('token');
-            const response = await fetch(`http://localhost:5000/api/testimonials/${id}/deny`, {
+            const response = await fetch(getApiUrl(`/testimonials/${id}/deny`), {
                 method: 'PATCH',
                 headers: { 'Authorization': `Bearer ${token}` }
             });
@@ -290,7 +291,7 @@ const AdminDashboard = () => {
 
         try {
             const token = localStorage.getItem('token');
-            const response = await fetch(`http://localhost:5000/api/testimonials/${deleteModal.itemId}`, {
+            const response = await fetch(getApiUrl(`/testimonials/${deleteModal.itemId}`), {
                 method: 'DELETE',
                 headers: { 'Authorization': `Bearer ${token}` }
             });
@@ -314,8 +315,8 @@ const AdminDashboard = () => {
         try {
             const token = localStorage.getItem('token');
             const url = editingTeamId
-                ? `http://localhost:5000/api/team-members/${editingTeamId}`
-                : 'http://localhost:5000/api/team-members';
+                ? getApiUrl(`/team-members/${editingTeamId}`)
+                : getApiUrl('/team-members');
             const method = editingTeamId ? 'PUT' : 'POST';
 
             const response = await fetch(url, {
@@ -361,7 +362,7 @@ const AdminDashboard = () => {
 
         try {
             const token = localStorage.getItem('token');
-            const response = await fetch(`http://localhost:5000/api/team-members/${id}`, {
+            const response = await fetch(getApiUrl(`/team-members/${id}`), {
                 method: 'DELETE',
                 headers: { 'Authorization': `Bearer ${token}` }
             });
@@ -383,8 +384,8 @@ const AdminDashboard = () => {
         try {
             const token = localStorage.getItem('token');
             const url = editingServiceId
-                ? `http://localhost:5000/api/services/${editingServiceId}`
-                : 'http://localhost:5000/api/services';
+                ? getApiUrl(`/services/${editingServiceId}`)
+                : getApiUrl('/services');
             const method = editingServiceId ? 'PUT' : 'POST';
 
             const response = await fetch(url, {
@@ -426,7 +427,7 @@ const AdminDashboard = () => {
 
         try {
             const token = localStorage.getItem('token');
-            const response = await fetch(`http://localhost:5000/api/services/${id}`, {
+            const response = await fetch(getApiUrl(`/services/${id}`), {
                 method: 'DELETE',
                 headers: { 'Authorization': `Bearer ${token}` }
             });
@@ -448,8 +449,8 @@ const AdminDashboard = () => {
         try {
             const token = localStorage.getItem('token');
             const url = editingDesignId
-                ? `http://localhost:5000/api/designs/${editingDesignId}`
-                : 'http://localhost:5000/api/designs';
+                ? getApiUrl(`/designs/${editingDesignId}`)
+                : getApiUrl('/designs');
             const method = editingDesignId ? 'PUT' : 'POST';
 
             const response = await fetch(url, {
@@ -491,7 +492,7 @@ const AdminDashboard = () => {
 
         try {
             const token = localStorage.getItem('token');
-            const response = await fetch(`http://localhost:5000/api/designs/${id}`, {
+            const response = await fetch(getApiUrl(`/designs/${id}`), {
                 method: 'DELETE',
                 headers: { 'Authorization': `Bearer ${token}` }
             });
@@ -530,7 +531,7 @@ We look forward to transforming your space!`;
         // Mark as read
         try {
             const token = localStorage.getItem('token');
-            await fetch(`http://localhost:5000/api/contacts/${contact._id}`, {
+            await fetch(getApiUrl(`/contacts/${contact._id}`), {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -554,7 +555,7 @@ We look forward to transforming your space!`;
 
         try {
             const token = localStorage.getItem('token');
-            const response = await fetch(`http://localhost:5000/api/contacts/${id}`, {
+            const response = await fetch(getApiUrl(`/contacts/${id}`), {
                 method: 'DELETE',
                 headers: { 'Authorization': `Bearer ${token}` }
             });
