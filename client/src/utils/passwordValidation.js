@@ -1,8 +1,8 @@
 // Password validation utility
-// eslint-disable-next-line no-useless-escape
 export const validatePassword = (password) => {
     const minLength = 8;
     const hasUpperCase = /[A-Z]/.test(password);
+    // eslint-disable-next-line no-useless-escape
     const hasSymbol = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password);
 
     return {
